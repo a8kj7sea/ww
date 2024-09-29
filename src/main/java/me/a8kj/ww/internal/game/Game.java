@@ -1,5 +1,9 @@
 package me.a8kj.ww.internal.game;
 
+import java.util.logging.Logger;
+
+import org.bukkit.Bukkit;
+
 import lombok.SneakyThrows;
 import me.a8kj.ww.parent.entity.game.EventGame;
 import me.a8kj.ww.parent.entity.game.enums.GameState;
@@ -14,15 +18,19 @@ public class Game implements EventGame {
 
     private EventMob eventMob;
 
+    private final Logger logger = Bukkit.getLogger();
+
     @Override
     @SneakyThrows
     public void applyGameMechanic(GameMechanic gameMechanic) {
         if (!gameMechanic.canApplyGameMechanic(gameState, nextGamePhase)) {
-            throw new IllegalArgumentException("Cannot apply game mechaninc right now !");
+            throw new IllegalArgumentException("Cannot apply game mechaninc with these conditions !");
         }
 
         gameMechanic.apply(this);
-
+        logger.info(
+                "[DEBUG-MODE] The mechanic operation is complete, and the %s has been successfully applied within the game."
+                        .replace("%s", gameMechanic.getClass().getSimpleName()));
     }
 
     @Override

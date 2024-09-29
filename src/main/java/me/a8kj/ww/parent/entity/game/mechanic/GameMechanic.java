@@ -1,8 +1,11 @@
 package me.a8kj.ww.parent.entity.game.mechanic;
 
+import lombok.Getter;
+import lombok.RequiredArgsConstructor;
 import me.a8kj.ww.parent.entity.game.EventGame;
 import me.a8kj.ww.parent.entity.game.enums.GameState;
 import me.a8kj.ww.parent.entity.game.enums.NextPhase;
+import me.a8kj.ww.parent.entity.plugin.PluginProvider;
 
 /**
  * Abstract class representing a game mechanic in the Werewolf game.
@@ -10,7 +13,11 @@ import me.a8kj.ww.parent.entity.game.enums.NextPhase;
  * the game's state and behavior.
  */
 
+@RequiredArgsConstructor
+@Getter
 public abstract class GameMechanic {
+
+    private final PluginProvider pluginProvider;
 
     /**
      * Applies the mechanic to the specified game instance.
