@@ -1,5 +1,6 @@
 package me.a8kj.ww.api.event.game;
 
+import org.bukkit.Bukkit;
 import org.bukkit.event.Event;
 import org.bukkit.event.HandlerList;
 
@@ -20,4 +21,9 @@ public abstract class AbstractGameEvent extends Event {
         return handlers;
     }
 
+    public void callEvent() {
+        Bukkit.getPluginManager().callEvent(this);
+        Bukkit.getLogger()
+                .info(String.format("[DEBUG-MODE] %s called successfully for game", getClass().getSimpleName()));
+    }
 }

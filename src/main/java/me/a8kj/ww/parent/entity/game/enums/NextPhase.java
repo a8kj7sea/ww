@@ -11,7 +11,7 @@ public enum NextPhase {
     START,
 
     /**
-     * Indicates the stop of a phase.
+     * Indicates the end of a phase.
      */
-    STOP;
+    END;
 }

@@ -9,7 +9,7 @@ import me.a8kj.ww.parent.configuration.ConfigValueRetriever;
 
 @RequiredArgsConstructor
 @Getter
-public class EventRertriever implements ConfigValueRetriever<EventPathIdentifiers> {
+public class EventRetriever implements ConfigValueRetriever<EventPathIdentifiers> {
 
     private final YamlConfiguration yamlConfiguration;
 }

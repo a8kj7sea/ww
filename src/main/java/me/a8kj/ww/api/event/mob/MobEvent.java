@@ -23,7 +23,7 @@ public abstract class MobEvent extends Event {
 
     public void callEvent() {
         Bukkit.getPluginManager().callEvent(this);
-        Bukkit.getLogger().info(String.format("[DEBUG-MODE] %s registered Successfully!", getClass().getSimpleName()));
+        Bukkit.getLogger().info(String.format("[DEBUG-MODE] %s called successfully for mob", getClass().getSimpleName()));
     }
 
 }

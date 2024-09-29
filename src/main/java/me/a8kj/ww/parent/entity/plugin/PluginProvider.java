@@ -3,6 +3,8 @@ package me.a8kj.ww.parent.entity.plugin;
 import java.util.Map;
 import java.util.logging.Logger;
 import org.bukkit.plugin.java.JavaPlugin;
+
+import me.a8kj.ww.internal.manager.ConfigurationManager;
 import me.a8kj.ww.parent.configuration.Configuration;
 
 /**
@@ -34,6 +36,13 @@ public interface PluginProvider {
      *         Configuration instance.
      */
     Map<String, Configuration> getConfigurations();
+
+    /**
+     * Retrieves the configurations manager instance associated with this provider.
+     *
+     * @return the Configuration manager.
+     */
+    ConfigurationManager getConfigurationManager();
 
     /**
      * Invoked when the plugin is started.

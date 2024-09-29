@@ -1,18 +1,22 @@
 package me.a8kj.ww.parent.behavior;
 
 /**
- * The SpawnableMob interface defines the contract for mobs that can be spawned
- * and despawned.
+ * The {@code SpawnableMob} interface represents mobs that can be dynamically
+ * spawned and removed from the game world.
  */
 public interface SpawnableMob {
 
     /**
-     * Spawns the mob in the game world at its designated spawn location.
+     * Spawns the mob into the game world at a specific location.
+     *
+     * @return {@code true} if the mob was successfully spawned, {@code false} otherwise.
      */
-    void spawn();
+    boolean spawn();
 
     /**
      * Despawns the mob, removing it from the game world.
+     *
+     * @return {@code true} if the mob was successfully despawned, {@code false} otherwise.
      */
-    void despawn();
+    boolean despawn();
 }

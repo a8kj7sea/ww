@@ -17,7 +17,7 @@ import me.a8kj.ww.parent.entity.plugin.PluginProvider;
 @Getter
 public abstract class GameMechanic {
 
-    private final PluginProvider pluginProvider;
+    protected final PluginProvider pluginProvider;
 
     /**
      * Applies the mechanic to the specified game instance.

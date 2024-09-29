@@ -9,10 +9,7 @@ import me.a8kj.ww.parent.entity.mob.EventMob;
 @Getter
 public class SpawnMobEvent extends MobEvent {
 
-    private final Location spawnLocation;
-
-    public SpawnMobEvent(EventMob mob, Location location) {
+    public SpawnMobEvent(EventMob mob) {
         super(mob);
-        this.spawnLocation = location;
     }
 }
