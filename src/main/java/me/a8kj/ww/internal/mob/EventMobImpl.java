@@ -10,11 +10,14 @@ import org.bukkit.entity.Entity;
 import com.google.common.collect.Lists;
 
 import io.lumine.mythic.api.mobs.MythicMob;
+import io.lumine.mythic.bukkit.BukkitAdapter;
 import io.lumine.mythic.bukkit.MythicBukkit;
 import io.lumine.mythic.core.mobs.ActiveMob;
 import lombok.NonNull;
 import me.a8kj.ww.parent.configuration.Configuration;
 import me.a8kj.ww.parent.entity.mob.EventMob;
+import me.a8kj.ww.parent.utils.LocationsUtils;
+import me.a8kj.ww.parent.utils.MathUtils;
 
 public class EventMobImpl implements EventMob {
 
@@ -28,7 +31,9 @@ public class EventMobImpl implements EventMob {
 
     public EventMobImpl(@NonNull String name, @NonNull YamlConfiguration yConfiguration) {
         this.name = name;
-        this.spawnLocations = Lists.newArrayList();
+        this.spawnLocations = LocationsUtils.loadLocations(yConfiguration, "spawn-locations");
+        this.activeMob = null;
+        this.bukkitEntity = null;
     }
 
     @Override
@@ -37,7 +42,21 @@ public class EventMobImpl implements EventMob {
             throw new IllegalStateException("entity is already alive !");
 
         Optional<MythicMob> mythicMob = mythicBukkit.getMobManager().getMythicMob(name);
-        if (mythicBukkit.get)
+
+        if (!mythicMob.isPresent()) {
+            throw new IllegalStateException(
+                    "Couldn't find entity with this name please make sure you had inputed a vaild name");
+        }
+        // pick random spawn location
+        Location spawnLocation = MathUtils.pickRandomElement(spawnLocations);
+        ActiveMob activeMob = mythicMob.get().spawn(BukkitAdapter.adapt(spawnLocation), 0);
+
+        if (activeMob == null) {
+            throw new IllegalStateException("Failed to get Activemob !");
+        }
+
+        Entity entity = activeMob.getEntity().getBukkitEntity();
+
     }
 
     @Override
@@ -68,13 +87,12 @@ public class EventMobImpl implements EventMob {
 
     @Override
     public boolean isAlive() {
-        return bukkitEntity.map(entity -> !entity.isDead())
-                .orElseThrow(() -> new IllegalStateException("Entity not spawned!"));
+        return !bukkitEntity.isDead();
     }
 
     @Override
     public boolean isValid() {
-        return bukkitEntity.map(Entity::isValid).orElseThrow(() -> new IllegalStateException("Entity invalid!"));
+        return bukkitEntity.isValid();
     }
 
 }
