@@ -68,7 +68,7 @@ public class LoadHandler extends EventHandler {
         }
 
         // Add the retrieved events to the loaded events set
-        loadedEvents.addAll(eventList);
+        scheduledEvents.addAll(eventList);
 
         // Log a debug message confirming successful loading of events
         Bukkit.getLogger().info("[DEBUG-MODE] You have loaded scheduledEvents successfully!");
