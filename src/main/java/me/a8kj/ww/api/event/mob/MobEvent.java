@@ -10,7 +10,7 @@ import me.a8kj.ww.parent.entity.mob.EventMob;
 
 @RequiredArgsConstructor
 @Getter
-public class MobEvent extends Event {
+public abstract class MobEvent extends Event {
 
     private static final HandlerList handlers = new HandlerList();
 

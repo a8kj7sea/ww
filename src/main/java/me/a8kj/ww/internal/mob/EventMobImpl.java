@@ -15,7 +15,7 @@ import io.lumine.mythic.bukkit.BukkitAdapter;
 import io.lumine.mythic.bukkit.MythicBukkit;
 import io.lumine.mythic.core.mobs.ActiveMob;
 import lombok.NonNull;
-import me.a8kj.ww.api.event.mob.SpawnMobEvent;
+import me.a8kj.ww.api.event.mob.impl.SpawnMobEvent;
 import me.a8kj.ww.parent.entity.mob.EventMob;
 import me.a8kj.ww.parent.utils.LocationsUtils;
 import me.a8kj.ww.parent.utils.MathUtils;

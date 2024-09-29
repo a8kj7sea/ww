@@ -10,6 +10,7 @@ import lombok.NonNull;
  * @param <E> The enum type used for path identifiers, which must implement
  *            PathIdentifier.
  */
+@SuppressWarnings("unchecked")
 public interface ConfigValueRetriever<E extends Enum<E> & PathIdentifier> {
 
     /**
