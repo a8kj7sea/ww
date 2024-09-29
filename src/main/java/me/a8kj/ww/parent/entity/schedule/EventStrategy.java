@@ -3,8 +3,7 @@ package me.a8kj.ww.parent.entity.schedule;
 import java.util.PriorityQueue;
 import java.util.Set;
 
-import lombok.Getter;
-import lombok.RequiredArgsConstructor;
+import lombok.*;
 
 /**
  * Abstract base class for defining event strategies.
@@ -13,7 +12,7 @@ import lombok.RequiredArgsConstructor;
 @Getter
 public abstract class EventStrategy {
 
-    protected final ScheduledEvent scheduledEvent;
+    protected final @NonNull ScheduledEvent scheduledEvent;
 
     /**
      * Executes the strategy logic for the event.
@@ -21,6 +20,6 @@ public abstract class EventStrategy {
      * @param eventQueue      the priority queue of scheduled events
      * @param scheduledEvents the set of all scheduled events
      */
-    public abstract void execute(PriorityQueue<ScheduledEvent> eventQueue,
-            Set<ScheduledEvent> scheduledEvents);
+    public abstract void execute(@NonNull PriorityQueue<ScheduledEvent> eventQueue,
+            @NonNull Set<ScheduledEvent> scheduledEvents);
 }

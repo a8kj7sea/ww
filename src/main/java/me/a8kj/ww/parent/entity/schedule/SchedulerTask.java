@@ -2,21 +2,33 @@ package me.a8kj.ww.parent.entity.schedule;
 
 import org.bukkit.scheduler.BukkitRunnable;
 
+import lombok.*;
+import me.a8kj.ww.parent.entity.plugin.PluginProvider;
+
 /**
  * An abstract class representing a scheduled task in a Bukkit environment.
  *
- * <p>This class extends BukkitRunnable, allowing for easy scheduling of tasks
+ * <p>
+ * This class extends BukkitRunnable, allowing for easy scheduling of tasks
  * using the Bukkit scheduler. It provides a framework for tasks that need to
- * perform periodic checks or actions.</p>
+ * perform periodic checks or actions.
+ * </p>
  */
+
+@RequiredArgsConstructor
+@Getter
 public abstract class SchedulerTask extends BukkitRunnable {
+
+    private final PluginProvider pluginProvider;
 
     /**
      * Executes the scheduled task.
      *
-     * <p>This method is called by the Bukkit scheduler when the task is
+     * <p>
+     * This method is called by the Bukkit scheduler when the task is
      * triggered. It invokes the {@link #check()} method, which must be
-     * implemented by subclasses to define the specific task behavior.</p>
+     * implemented by subclasses to define the specific task behavior.
+     * </p>
      */
     @Override
     public void run() {
@@ -26,8 +38,10 @@ public abstract class SchedulerTask extends BukkitRunnable {
     /**
      * Defines the specific behavior of the scheduled task.
      *
-     * <p>Subclasses must implement this method to provide the functionality 
-     * that should be executed when the task runs.</p>
+     * <p>
+     * Subclasses must implement this method to provide the functionality
+     * that should be executed when the task runs.
+     * </p>
      */
     public abstract void check();
 }
