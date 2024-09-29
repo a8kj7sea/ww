@@ -14,11 +14,14 @@ events:
       api-usage: false
     mob-death-event:
       api-usage: false
+    mob-move-event:
+      api-usage: false
   game:
     end-game-event:
       api-usage: false
     start-game-event:
       api-usage: false
+
   
 
 

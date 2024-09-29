@@ -74,4 +74,13 @@ public class Configuration {
     public FileConfiguration getConfigurationFile() {
         return configurationFile;
     }
+
+    /**
+     * Retrieves the loaded yaml configuration file.
+     *
+     * @return the YamlConfiguration instance
+     */
+    public YamlConfiguration getYamConfiguration() {
+        return (YamlConfiguration) getConfigurationFile();
+    }
 }
