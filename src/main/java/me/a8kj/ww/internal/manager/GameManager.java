@@ -17,6 +17,7 @@ import me.a8kj.ww.parent.entity.mob.EventMob;
 import me.a8kj.ww.parent.entity.plugin.PluginProvider;
 import org.bukkit.Bukkit;
 
+import java.util.List;
 import java.util.Optional;
 
 /**
@@ -57,6 +58,31 @@ public class GameManager {
         currentGame.setEventMob(mob);
 
         return currentGame;
+    }
+
+    /**
+     * Checks if the game has been properly set up.
+     *
+     * <p>
+     * This method checks whether the necessary setup process for the game is
+     * complete
+     * by verifying that spawn locations have been defined. If the setup is
+     * incomplete
+     * or failed, it returns false.
+     * </p>
+     *
+     * @return true if the setup is complete (i.e., spawn locations exist), false
+     *         otherwise.
+     */
+    public boolean checkSetup() {
+        // Retrieve the list of spawn locations from the configuration file
+        List<String> spawnLocations = pluginProvider.getConfigurations()
+                .get("locations")
+                .getYamConfiguration()
+                .getStringList("spawn-locations");
+
+        // Return true if the list is not empty, indicating that setup is complete
+        return !spawnLocations.isEmpty();
     }
 
     /**

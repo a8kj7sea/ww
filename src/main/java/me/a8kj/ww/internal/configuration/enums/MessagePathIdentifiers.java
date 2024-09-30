@@ -19,7 +19,6 @@ public enum MessagePathIdentifiers implements PathIdentifier {
         LOCATION_ADDED("messages.location.added-location", ""),
         LOCATION_LIST_EMPTY("messages.location.list-empty", ""),
         LOCATION_LIST_OPENED("messages.location.list-location", ""),
-        LOCATION_SAVING_ERROR("messages.location.saving-error", ""),
 
         // Command messages
         COMMAND_STOP_GAME_FAILURE("messages.command.stop-game.failure", ""),

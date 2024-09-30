@@ -19,7 +19,6 @@ messages:
     added-location: "&aYou have successfully added the location!"
     list-empty: "&cThere are no locations available. Please ensure you have added one first!"
     list-location: "&aYou have opened the locations menu!"
-    saving-error: "&cAn error occurred while saving the location."
 
   command:
     stop-game:

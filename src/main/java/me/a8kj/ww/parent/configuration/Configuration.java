@@ -2,6 +2,9 @@ package me.a8kj.ww.parent.configuration;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -13,6 +16,7 @@ public class Configuration {
 
     private final File file;
     private FileConfiguration configurationFile;
+    private final Logger logger;
 
     /**
      * Constructs a Configuration instance.
@@ -23,8 +27,9 @@ public class Configuration {
      *                        exist
      */
     public Configuration(JavaPlugin plugin, String child, boolean saveDefaultData) {
+        this.logger = plugin.getLogger(); // Initialize the logger
         // Check if child ends with .yml and append if not
-        if (!child.endsWith(".yml") || !child.endsWith(".yaml")) {
+        if (!child.endsWith(".yml") && !child.endsWith(".yaml")) {
             child += ".yml";
         }
 
@@ -37,12 +42,18 @@ public class Configuration {
         file.getParentFile().mkdirs();
         if (!file.exists()) {
             if (saveDefaultData) {
-                plugin.saveResource(file.getName(), saveDefaultData);
+                try {
+                    plugin.saveResource(file.getName(), saveDefaultData);
+                    logger.info("Default config file created: " + file.getName());
+                } catch (Exception e) {
+                    logger.log(Level.SEVERE, "Failed to save default config file: " + file.getName(), e);
+                }
             } else {
                 try {
                     file.createNewFile();
+                    logger.info("Config file created: " + file.getName());
                 } catch (IOException e) {
-                    e.printStackTrace();
+                    logger.log(Level.SEVERE, "Failed to create config file: " + file.getName(), e);
                 }
             }
         }
@@ -54,8 +65,9 @@ public class Configuration {
     public void save() {
         try {
             configurationFile.save(file);
+            logger.info("Config file saved: " + file.getName());
         } catch (IOException e) {
-            e.printStackTrace();
+            logger.log(Level.SEVERE, "Failed to save config file: " + file.getName(), e);
         }
     }
 
@@ -64,6 +76,7 @@ public class Configuration {
      */
     public void load() {
         configurationFile = YamlConfiguration.loadConfiguration(file);
+        logger.info("Config file loaded: " + file.getName());
     }
 
     /**

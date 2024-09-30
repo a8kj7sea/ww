@@ -11,6 +11,7 @@ import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import lombok.NonNull;
+import me.a8kj.ww.internal.command.subcommand.other.ReloadConfig;
 import me.a8kj.ww.internal.configuration.enums.MessagePathIdentifiers;
 import me.a8kj.ww.internal.configuration.files.MessagesFile;
 import me.a8kj.ww.internal.configuration.retrievers.messages.MessageRetriever;
@@ -103,11 +104,14 @@ public class LGCommand extends PlayerCommand {
             return false;
         }
 
-        if (!player.hasPermission(subToExecute.getPermission()) && subToExecute.getPermission() != null) {
-            player.sendMessage(messageRetriever.getMessage(MessagePathIdentifiers.SYSTEM_NO_PERM));
-            return false;
+        if (subToExecute.getPermission() != null) {
+            if (!player.hasPermission(subToExecute.getPermission())) {
+                player.sendMessage(messageRetriever.getMessage(MessagePathIdentifiers.SYSTEM_NO_PERM));
+                return false;
+            }
+            subToExecute.execute(args, player);
+            return true;
         }
-
         subToExecute.execute(args, player);
         return true;
     }
@@ -120,6 +124,6 @@ public class LGCommand extends PlayerCommand {
      */
     @Override
     public void defineSubs(@NonNull Map<String, SubCommand<Player>> subCommands) {
-        // Implement sub-command definitions here
+        subCommands.put("reload", new ReloadConfig(pluginProvider));
     }
 }
