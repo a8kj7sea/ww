@@ -5,14 +5,13 @@ import io.lumine.mythic.bukkit.events.MythicMobDeathEvent;
 import io.lumine.mythic.core.mobs.ActiveMob;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
+import me.a8kj.ww.api.event.game.impl.EndGameEvent.EndReason;
 import me.a8kj.ww.api.event.mob.AnnounceDropEvent;
 import me.a8kj.ww.internal.configuration.enums.SettingsPathIdentifiers;
-import me.a8kj.ww.internal.configuration.files.MessagesFile;
 import me.a8kj.ww.internal.configuration.files.SettingsFile;
 import me.a8kj.ww.internal.configuration.retrievers.SettingsRetriever;
-import me.a8kj.ww.internal.configuration.retrievers.messages.MessageRetriever;
+import me.a8kj.ww.internal.manager.GameManager;
 import me.a8kj.ww.parent.entity.plugin.PluginProvider;
-import me.a8kj.ww.parent.utils.PlayerUtils;
 
 /**
  * Listener for MythicMob death events.
@@ -54,7 +53,8 @@ public class MythicMobDeathListener {
         }
 
         // HERE LAZM A3ML APPLY END MECHANINC
-
+        GameManager gameManager = pluginProvider.getGameManager();
+        gameManager.endGame(EndReason.DEATH);
         // Trigger the announce drop event with the drops from the dead mob
         new AnnounceDropEvent(event.getDrops()).callEvent();
     }

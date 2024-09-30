@@ -37,6 +37,15 @@ public interface EventGame {
     void setGameState(GameState gameState);
 
     /**
+     * Sets the event mob for this game instance.
+     *
+     * @param eventMob The EventMob to be set for the game.
+     *                 This mob will be associated with the game's mechanics and
+     *                 events.
+     */
+    void setEventMob(EventMob eventMob);
+
+    /**
      * Retrieves the associated EventMob for the game.
      * 
      * @return the EventMob currently linked to this game session.

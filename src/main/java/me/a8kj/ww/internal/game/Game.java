@@ -58,4 +58,9 @@ public class Game implements EventGame {
         this.nextGamePhase = nextGamePhase;
     }
 
+    @Override
+    public void setEventMob(EventMob eventMob) {
+        this.eventMob = eventMob;
+    }
+
 }

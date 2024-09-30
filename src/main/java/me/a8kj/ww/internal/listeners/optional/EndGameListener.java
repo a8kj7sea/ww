@@ -49,6 +49,8 @@ public class EndGameListener implements Listener {
         } else {
             broadcastDeathMessage(messagesFile, settingsRetriever, event);
         }
+
+        pluginProvider.getGameManager().removeGame();
     }
 
     /**

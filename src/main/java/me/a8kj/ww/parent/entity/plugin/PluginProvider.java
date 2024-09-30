@@ -5,6 +5,7 @@ import java.util.logging.Logger;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import me.a8kj.ww.internal.manager.ConfigurationManager;
+import me.a8kj.ww.internal.manager.GameManager;
 import me.a8kj.ww.parent.configuration.Configuration;
 
 /**
@@ -43,6 +44,13 @@ public interface PluginProvider {
      * @return the Configuration manager.
      */
     ConfigurationManager getConfigurationManager();
+
+    /**
+     * Retrieves the game manager instance associated with this provider.
+     *
+     * @return the game manager.
+     */
+    GameManager getGameManager();
 
     /**
      * Invoked when the plugin is started.
