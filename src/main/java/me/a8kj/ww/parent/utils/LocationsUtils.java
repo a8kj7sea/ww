@@ -9,7 +9,9 @@ import org.bukkit.configuration.file.YamlConfiguration;
 import com.google.common.collect.Lists;
 
 import lombok.NonNull;
+import lombok.experimental.UtilityClass;
 
+@UtilityClass
 public class LocationsUtils {
 
     /**
