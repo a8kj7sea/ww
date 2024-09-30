@@ -8,14 +8,15 @@ import lombok.NonNull;
 import me.a8kj.ww.api.event.mob.impl.MobMoveEvent;
 import me.a8kj.ww.parent.entity.mob.EventMob;
 import me.a8kj.ww.parent.entity.plugin.PluginProvider;
-import me.a8kj.ww.parent.entity.schedule.SchedulerTask;
+import me.a8kj.ww.parent.entity.plugin.PluginTask;
+
 
 /**
  * Task that monitors the movement of a specific EventMob.
  * Triggers a MobMoveEvent when the EventMob changes its location.
  */
 @Getter
-public class MobWatcherTask extends SchedulerTask {
+public class MobWatcherTask extends PluginTask {
 
     private final EventMob eventMob;
     private Location lastLocation;
@@ -34,7 +35,7 @@ public class MobWatcherTask extends SchedulerTask {
 
     @Override
     public void check() {
-        // Check if the EventMob is valid
+        // Check if the EventMob is valid/alive
         if (!eventMob.isValid() || eventMob.getBukkitEntity().isEmpty() || !eventMob.isAlive()) {
             this.cancel();
             throw new IllegalStateException("EventMob invalid!");

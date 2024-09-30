@@ -3,6 +3,7 @@ package me.a8kj.ww.internal.game.mechanic;
 import lombok.NonNull;
 import me.a8kj.ww.api.event.game.impl.StartGameEvent;
 import me.a8kj.ww.api.event.mob.impl.SpawnMobEvent;
+import me.a8kj.ww.internal.task.MobWatcherTask;
 import me.a8kj.ww.parent.entity.game.EventGame;
 import me.a8kj.ww.parent.entity.game.enums.GameState;
 import me.a8kj.ww.parent.entity.game.enums.NextPhase;
@@ -89,6 +90,7 @@ public class StartMechanic extends GameMechanic {
     private void handleEventTriggering(EventGame game, EventMob mob) {
         // Trigger SpawnMobEvent unconditionally
         new SpawnMobEvent(mob).callEvent();
+        new MobWatcherTask(pluginProvider, mob).runTaskTimer(pluginProvider.getPlugin(), 0, 20);
 
         // Trigger StartGameEvent unconditionally
         new StartGameEvent(game).callEvent();

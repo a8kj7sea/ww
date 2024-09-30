@@ -7,6 +7,7 @@ import org.bukkit.plugin.java.JavaPlugin;
 import me.a8kj.ww.internal.manager.ConfigurationManager;
 import me.a8kj.ww.internal.manager.GameManager;
 import me.a8kj.ww.parent.configuration.Configuration;
+import me.a8kj.ww.parent.entity.schedule.EventScheduler;
 
 /**
  * Interface representing a provider for plugin-related functionalities.
@@ -52,6 +53,12 @@ public interface PluginProvider {
      */
     GameManager getGameManager();
 
+    /**
+     * Retrieves the event scheduler instance associated with this provider.
+     *
+     * @return the event scheduler.
+     */
+    EventScheduler getEventScheduler();
     /**
      * Invoked when the plugin is started.
      * This method can be overridden to add startup logic.

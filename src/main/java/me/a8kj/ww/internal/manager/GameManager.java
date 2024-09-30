@@ -95,7 +95,7 @@ public class GameManager {
      * @return An Optional containing the current EventGame instance, or an empty
      *         Optional if no game is active.
      */
-    public Optional<EventGame> getCurrentGameOptional() {
+    public Optional<EventGame> getCurrentGame() {
         return Optional.ofNullable(currentGame);
     }
 

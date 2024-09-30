@@ -2,6 +2,7 @@ package me.a8kj.ww.api.event.mob.impl;
 
 import org.bukkit.Location;
 import org.bukkit.event.Cancellable;
+import java.util.function.Consumer;
 
 import lombok.Getter;
 import me.a8kj.ww.api.event.mob.MobEvent;
@@ -16,8 +17,12 @@ public class MobMoveEvent extends MobEvent implements Cancellable {
 
     private final Location fromLocation;
     private final Location toLocation;
-
     private boolean cancelled;
+
+    /**
+     * Consumer to handle teleportation logic, can be injected from outside
+     */
+    private Consumer<Location> teleportationHandler;
 
     /**
      * Constructor for MobMoveEvent.
@@ -30,6 +35,12 @@ public class MobMoveEvent extends MobEvent implements Cancellable {
         super(eventMob);
         this.fromLocation = fromLocation;
         this.toLocation = toLocation;
+        this.cancelled = false;
+
+        /**
+         * Default teleportation handler just teleports to the provided location
+         */
+        this.teleportationHandler = this::defaultTeleportationHandler;
     }
 
     /**
@@ -50,11 +61,28 @@ public class MobMoveEvent extends MobEvent implements Cancellable {
     @Override
     public void setCancelled(boolean cancel) {
         this.cancelled = cancel;
-        if (cancel)
-            teleportToSafeLocation();
+        if (cancel && teleportationHandler != null) {
+            teleportationHandler.accept(fromLocation);
+        }
     }
 
-    private void teleportToSafeLocation() {
+    /**
+     * Default teleportation logic: teleport the mob to the provided location.
+     *
+     * @param safeLocation The location to teleport the mob to.
+     */
+    private void defaultTeleportationHandler(Location safeLocation) {
+        if (safeLocation != null && eventMob.getBukkitEntity().isPresent()) {
+            eventMob.getBukkitEntity().get().teleport(safeLocation);
+        }
+    }
 
+    /**
+     * Set a custom teleportation handler.
+     *
+     * @param handler The custom Consumer that handles teleportation.
+     */
+    public void setTeleportationHandler(Consumer<Location> handler) {
+        this.teleportationHandler = handler;
     }
 }

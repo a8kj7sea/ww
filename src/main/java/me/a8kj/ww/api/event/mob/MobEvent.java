@@ -18,7 +18,7 @@ public abstract class MobEvent extends Event {
     private static final HandlerList handlers = new HandlerList();
 
     /** The EventMob associated with this event. */
-    private final EventMob eventMob;
+    protected final EventMob eventMob;
 
     @Override
     public HandlerList getHandlers() {
