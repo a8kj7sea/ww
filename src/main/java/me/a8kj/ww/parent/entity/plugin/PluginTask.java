@@ -12,7 +12,7 @@ import lombok.*;
 @Getter
 public abstract class PluginTask extends BukkitRunnable {
 
-    protected final PluginProvider pluginProvider;
+    protected final PluginProvider pluginProvider; 
 
     /**
      * Executes the scheduled task.

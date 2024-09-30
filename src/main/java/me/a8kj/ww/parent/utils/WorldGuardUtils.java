@@ -51,6 +51,7 @@ public class WorldGuardUtils {
         return false;
     }
 
+    @SuppressWarnings("removal")
     public static Location findSafeLocationInsideRegion(Location currentLocation, String regionName, int distance) {
         World world = currentLocation.getWorld();
         RegionManager regionManager = WorldGuard.getInstance().getPlatform().getRegionContainer()
