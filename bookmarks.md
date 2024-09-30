@@ -1,0 +1,1 @@
+add events checker logic on listeners register and on callback

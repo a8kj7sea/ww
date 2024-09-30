@@ -8,6 +8,8 @@ import org.bukkit.configuration.file.YamlConfiguration;
 
 import com.google.common.collect.Lists;
 
+import lombok.NonNull;
+
 public class LocationsUtils {
 
     /**
@@ -38,6 +40,18 @@ public class LocationsUtils {
             }
         }
         return locations;
+    }
+
+    /**
+     * Converts the coordinates of the given location into a formatted string.
+     *
+     * @param location the location object containing the coordinates
+     * @return a string representation of the coordinates in the format "x, y, z"
+     *         with each value rounded to two decimal places
+     * @throws NullPointerException if the location parameter is null
+     */
+    public static String getLocationCordsAsString(@NonNull Location location) {
+        return String.format("%.2f , %.2f , %.2f", location.getX(), location.getY(), location.getZ());
     }
 
 }

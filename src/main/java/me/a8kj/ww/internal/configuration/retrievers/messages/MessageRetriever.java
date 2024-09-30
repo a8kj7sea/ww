@@ -14,8 +14,8 @@ import me.a8kj.ww.parent.configuration.ConfigValueRetriever;
 import me.a8kj.ww.parent.utils.StringUtils;
 
 /**
- * A class for retrieving messages from the configuration with support for
- * PlaceholderAPI and legacy colorization.
+ * A class for retrieving messages from the configuration without support for
+ * PlaceholderAPI.
  */
 @RequiredArgsConstructor
 @Getter

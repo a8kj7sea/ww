@@ -12,9 +12,9 @@ events:
   mob:
     spawn-mob-event:
       api-usage: false
-    mob-death-event:
-      api-usage: false
     mob-move-event:
+      api-usage: false
+    announce-drop-event:
       api-usage: false
   game:
     end-game-event:
