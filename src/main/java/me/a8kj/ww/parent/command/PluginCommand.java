@@ -34,7 +34,7 @@ public abstract class PluginCommand<Source extends Permissible> implements TabCo
     protected final Map<String, SubCommand<Source>> subCommands = Maps.newHashMap();
 
     /** The provider for accessing plugin-related functionality. */
-    private final PluginProvider pluginProvider;
+    protected final PluginProvider pluginProvider;
 
     /**
      * Constructs a new PluginCommand with the given PluginProvider.
