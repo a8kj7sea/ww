@@ -1,4 +1,4 @@
-package me.a8kj.ww.internal.listeners;
+package me.a8kj.ww.internal.listeners.mob;
 
 import org.bukkit.event.EventHandler;
 import io.lumine.mythic.bukkit.events.MythicMobDeathEvent;
