@@ -32,7 +32,7 @@ public class MessageRetriever implements ConfigValueRetriever<MessagePathIdentif
      */
     public String getMessage(@NonNull MessagePathIdentifiers pathId) {
         String message = ConfigValueRetriever.super.getString(pathId);
-        return StringUtils.legacyColorize(message);
+        return StringUtils.legacyColorize(message).replace("%prefix%", getMessage(MessagePathIdentifiers.PREFIX));
     }
 
     /**
@@ -59,7 +59,7 @@ public class MessageRetriever implements ConfigValueRetriever<MessagePathIdentif
      */
     public String getMessage(@NonNull MessagePathIdentifiers pathId, @NonNull Player player) {
         String message = ConfigValueRetriever.super.getString(pathId);
-        return StringUtils.legacyColorize(message);
+        return StringUtils.legacyColorize(message).replace("%prefix%", getMessage(MessagePathIdentifiers.PREFIX));
     }
 
     /**

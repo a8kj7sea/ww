@@ -9,7 +9,11 @@ import me.a8kj.ww.parent.configuration.PathIdentifier;
 @RequiredArgsConstructor
 @Getter
 public enum MessagePathIdentifiers implements PathIdentifier {
+
+        // prefix
+        PREFIX("prefix", ""),
         // System messages
+
         SYSTEM_NO_PERM("messages.system.no-perm", ""),
         SYSTEM_ONLY_PLAYER("messages.system.only-player", ""),
         SYSTEM_UNKNOWN_COMMAND("messages.system.unknown-command", ""),
