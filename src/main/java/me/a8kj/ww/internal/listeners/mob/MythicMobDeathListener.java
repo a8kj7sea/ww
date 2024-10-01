@@ -1,6 +1,8 @@
 package me.a8kj.ww.internal.listeners.mob;
 
 import org.bukkit.event.EventHandler;
+import org.bukkit.event.Listener;
+
 import io.lumine.mythic.bukkit.events.MythicMobDeathEvent;
 import io.lumine.mythic.core.mobs.ActiveMob;
 import lombok.Getter;
@@ -21,7 +23,7 @@ import me.a8kj.ww.parent.entity.plugin.PluginProvider;
  */
 @RequiredArgsConstructor
 @Getter
-public class MythicMobDeathListener {
+public class MythicMobDeathListener implements Listener {
 
     private final PluginProvider pluginProvider;
 

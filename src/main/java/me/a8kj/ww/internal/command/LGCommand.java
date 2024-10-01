@@ -11,7 +11,14 @@ import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import lombok.NonNull;
+import me.a8kj.ww.internal.command.subcommand.game.EndGameSub;
+import me.a8kj.ww.internal.command.subcommand.game.StartGameSub;
+import me.a8kj.ww.internal.command.subcommand.menu.LocationMenuSub;
+import me.a8kj.ww.internal.command.subcommand.menu.SchedulesMenuSub;
+import me.a8kj.ww.internal.command.subcommand.other.HelpSub;
 import me.a8kj.ww.internal.command.subcommand.other.ReloadConfigSub;
+import me.a8kj.ww.internal.command.subcommand.setup.AddSpawnLocationSub;
+import me.a8kj.ww.internal.command.subcommand.setup.ScheduleSub;
 import me.a8kj.ww.internal.configuration.enums.MessagePathIdentifiers;
 import me.a8kj.ww.internal.configuration.files.MessagesFile;
 import me.a8kj.ww.internal.configuration.retrievers.messages.MessageRetriever;
@@ -124,6 +131,21 @@ public class LGCommand extends PlayerCommand {
      */
     @Override
     public void defineSubs(@NonNull Map<String, SubCommand<Player>> subCommands) {
+        // other subs
         subCommands.put("reload", new ReloadConfigSub(pluginProvider));
+        subCommands.put("help", new HelpSub(pluginProvider));
+
+        // setup subs :)
+        subCommands.put("addloc", new AddSpawnLocationSub(pluginProvider));
+        subCommands.put("schedule", new ScheduleSub(pluginProvider));
+
+        // menu
+        subCommands.put("locations", new LocationMenuSub(pluginProvider));
+        subCommands.put("schedules", new SchedulesMenuSub(pluginProvider));
+
+        // game logic
+        subCommands.put("start", new StartGameSub(pluginProvider));
+        subCommands.put("schedules", new EndGameSub(pluginProvider));
+
     }
 }

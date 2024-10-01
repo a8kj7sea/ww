@@ -6,6 +6,8 @@ import org.bukkit.plugin.java.JavaPlugin;
 
 import me.a8kj.ww.internal.manager.ConfigurationManager;
 import me.a8kj.ww.internal.manager.GameManager;
+import me.a8kj.ww.internal.schedules.SchedulesManager;
+import me.a8kj.ww.internal.task.SchedulerTask;
 import me.a8kj.ww.parent.configuration.Configuration;
 import me.a8kj.ww.parent.entity.menu.Menu;
 import me.a8kj.ww.parent.entity.schedule.EventScheduler;
@@ -68,6 +70,20 @@ public interface PluginProvider {
      * @return the event scheduler.
      */
     EventScheduler getEventScheduler();
+
+    /**
+     * Retrieves the event scheduler manager instance associated with this provider.
+     *
+     * @return the event scheduler manager.
+     */
+    SchedulesManager getSchedulesManager();
+
+    /**
+     * Retrieves the event scheduler task instance associated with this provider.
+     *
+     * @return the event scheduler task.
+     */
+    SchedulerTask getSchedulerTask();
 
     /**
      * Invoked when the plugin is started.

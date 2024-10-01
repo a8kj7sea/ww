@@ -1,0 +1,10 @@
+schedules:
+  - day: TUESDAY
+    hours: 12
+    minutes: 0
+  - day: TUESDAY
+    hours: 14
+    minutes: 0
+  - day: MONDAY
+    hours: 12
+    minutes: 0

@@ -1,12 +1,16 @@
-# PlacholerAPI
+# PlaceholderAPI Settings
 placholder-api:
-  support: true
+  # Set to 'true' if PlaceholderAPI is supported; 'false' otherwise
+  support: false
 
-
-
+# Region Settings
 region-settings:
+  # The name of the WorldGuard region where the mobs should be confined
+  # Ensure that the region name matches exactly with the WorldGuard region
   region-name: "warzone"
 
-
+# Mob Settings
 mob-settings:
-  name: "GIANT" # please don't forgot here it senstive to letters
+  # The name of the mob that should spawn (case-sensitive)
+  # Ensure the mob name is correctly spelled and follows the Minecraft mob naming conventions
+  name: "GIANT" # Be mindful of case sensitivity here

@@ -14,8 +14,8 @@ public enum EventPathIdentifiers implements PathIdentifier {
 
     // Mob Events
     SPAWN_MOB_EVENT("events.mob.spawn-mob-event.api-usage", Boolean.class),
-    MOB_DEATH_EVENT("events.mob.mob-death-event.api-usage", Boolean.class),
     MOB_MOVE_EVENT("events.mob.mob-move-event.api-usage", Boolean.class),
+    ANNOUNCE_DROP_EVENT("events.mob.announce-drop-event.api-usage", Boolean.class),
 
     // Game Events
     END_GAME_EVENT("events.game.end-game-event.api-usage", Boolean.class),
