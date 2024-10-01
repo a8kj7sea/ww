@@ -11,7 +11,7 @@ import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import lombok.NonNull;
-import me.a8kj.ww.internal.command.subcommand.other.ReloadConfig;
+import me.a8kj.ww.internal.command.subcommand.other.ReloadConfigSub;
 import me.a8kj.ww.internal.configuration.enums.MessagePathIdentifiers;
 import me.a8kj.ww.internal.configuration.files.MessagesFile;
 import me.a8kj.ww.internal.configuration.retrievers.messages.MessageRetriever;
@@ -124,6 +124,6 @@ public class LGCommand extends PlayerCommand {
      */
     @Override
     public void defineSubs(@NonNull Map<String, SubCommand<Player>> subCommands) {
-        subCommands.put("reload", new ReloadConfig(pluginProvider));
+        subCommands.put("reload", new ReloadConfigSub(pluginProvider));
     }
 }

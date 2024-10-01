@@ -2,9 +2,7 @@ package me.a8kj.ww.internal.command.subcommand.other;
 
 import org.bukkit.entity.Player;
 import me.a8kj.ww.internal.configuration.enums.MessagePathIdentifiers;
-import me.a8kj.ww.internal.configuration.files.MessagesFile;
 import me.a8kj.ww.internal.configuration.retrievers.messages.MessageRetriever;
-import me.a8kj.ww.internal.manager.ConfigurationManager;
 import me.a8kj.ww.parent.command.impl.PlayerSubCommand;
 import me.a8kj.ww.parent.configuration.Configuration;
 import me.a8kj.ww.parent.entity.plugin.PluginProvider;
@@ -18,7 +16,7 @@ import me.a8kj.ww.parent.entity.plugin.PluginProvider;
  * message to the player upon completion.
  * </p>
  */
-public class ReloadConfig extends PlayerSubCommand {
+public class ReloadConfigSub extends PlayerSubCommand {
 
     /**
      * Constructor to initialize the ReloadConfig sub-command.
@@ -26,7 +24,7 @@ public class ReloadConfig extends PlayerSubCommand {
      * @param pluginProvider The {@link PluginProvider} instance for accessing
      *                       the plugin's resources and configurations.
      */
-    public ReloadConfig(PluginProvider pluginProvider) {
+    public ReloadConfigSub(PluginProvider pluginProvider) {
         super(pluginProvider);
     }
 

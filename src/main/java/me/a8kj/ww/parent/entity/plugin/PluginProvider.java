@@ -7,6 +7,7 @@ import org.bukkit.plugin.java.JavaPlugin;
 import me.a8kj.ww.internal.manager.ConfigurationManager;
 import me.a8kj.ww.internal.manager.GameManager;
 import me.a8kj.ww.parent.configuration.Configuration;
+import me.a8kj.ww.parent.entity.menu.Menu;
 import me.a8kj.ww.parent.entity.schedule.EventScheduler;
 
 /**
@@ -40,6 +41,14 @@ public interface PluginProvider {
     Map<String, Configuration> getConfigurations();
 
     /**
+     * Retrieves a map of register menu(s) for this plugin.
+     *
+     * @return a map where the key is the menu name and the value is the
+     *         menu instance.
+     */
+    Map<String, Menu> getMenus();
+
+    /**
      * Retrieves the configurations manager instance associated with this provider.
      *
      * @return the Configuration manager.
@@ -59,6 +68,7 @@ public interface PluginProvider {
      * @return the event scheduler.
      */
     EventScheduler getEventScheduler();
+
     /**
      * Invoked when the plugin is started.
      * This method can be overridden to add startup logic.

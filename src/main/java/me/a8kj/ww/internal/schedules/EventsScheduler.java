@@ -33,7 +33,7 @@ public class EventsScheduler implements EventScheduler {
     /**
      * A set that contains all scheduled events to ensure uniqueness.
      */
-    private final Set<ScheduledEvent> scheduledEventsSet;
+    private final Set<ScheduledEvent> scheduledEvents;
 
     /**
      * Constructs a new {@code EventsScheduler} with the specified set of scheduled
@@ -42,7 +42,7 @@ public class EventsScheduler implements EventScheduler {
      * @param scheduledEventsSet the set of scheduled events to be managed
      */
     public EventsScheduler(@NonNull Set<ScheduledEvent> scheduledEventsSet) {
-        this.scheduledEventsSet = scheduledEventsSet;
+        this.scheduledEvents = scheduledEventsSet;
     }
 
     /**
@@ -64,9 +64,10 @@ public class EventsScheduler implements EventScheduler {
     @Override
     public void schedule(@NonNull ScheduledEvent scheduledEvent, @NonNull ScheduledType type) {
         switch (type) {
-            case ADD -> new AddStrategy(scheduledEvent).execute(scheduledEventsQueue, scheduledEventsSet);
-            case REMOVE -> new RemoveStrategy(scheduledEvent).execute(scheduledEventsQueue, scheduledEventsSet);
+            case ADD -> new AddStrategy(scheduledEvent).execute(scheduledEventsQueue, scheduledEvents);
+            case REMOVE -> new RemoveStrategy(scheduledEvent).execute(scheduledEventsQueue, scheduledEvents);
             default -> throw new IllegalArgumentException("Invalid ScheduledType!");
         }
     }
+
 }

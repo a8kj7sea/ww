@@ -19,8 +19,7 @@ import me.a8kj.ww.parent.entity.schedule.ScheduledEvent;
  *
  * <p>
  * This task checks for scheduled events and starts a game if conditions are
- * met,
- * such as having enough players and no ongoing game.
+ * met, such as having enough players and no ongoing game.
  * </p>
  */
 public class SchedulerTask extends PluginTask {
@@ -53,16 +52,20 @@ public class SchedulerTask extends PluginTask {
         while (!scheduledEventsQueue.isEmpty()) {
             ScheduledEvent nextEvent = scheduledEventsQueue.peek();
 
-            // If no more events or next event is not due, break the loop
+            // Break the loop if no more events or the next event is not due
             if (nextEvent == null || !nextEvent.getExecutionTime().isBefore(now)) {
                 break;
             }
 
             GameManager gameManager = pluginProvider.getGameManager();
+            if (!gameManager.checkSetup()) {
+                Bukkit.getLogger().warning(
+                        "[DEBUG-MODE] Couldn't start event right now; please ensure you have setup spawn locations.");
+                return; // Exit early if setup is incomplete
+            }
 
-            // Check if there is a current game
+            // Proceed if there is no current game
             if (!gameManager.getCurrentGame().isPresent()) {
-                // Check for player count
                 if (Bukkit.getOnlinePlayers().size() <= 1) {
                     Bukkit.getLogger().warning("[DEBUG-MODE] Not enough players to start the event!");
                     return; // Exit early if not enough players

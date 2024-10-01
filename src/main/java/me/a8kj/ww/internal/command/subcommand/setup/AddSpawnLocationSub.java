@@ -16,7 +16,7 @@ import me.a8kj.ww.parent.utils.LocationsUtils;
  * in the configuration.
  * </p>
  */
-public class AddSpawnLocation extends PlayerSubCommand {
+public class AddSpawnLocationSub extends PlayerSubCommand {
 
     /**
      * Constructor for initializing the sub-command.
@@ -24,7 +24,7 @@ public class AddSpawnLocation extends PlayerSubCommand {
      * @param pluginProvider the plugin provider instance for accessing plugin
      *                       resources.
      */
-    public AddSpawnLocation(PluginProvider pluginProvider) {
+    public AddSpawnLocationSub(PluginProvider pluginProvider) {
         super(pluginProvider);
     }
 

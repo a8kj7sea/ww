@@ -5,7 +5,6 @@ import java.util.Map;
 
 import org.bukkit.Material;
 import org.bukkit.event.inventory.InventoryClickEvent;
-import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.InventoryView;
 
 import lombok.Getter;
@@ -19,11 +18,11 @@ import me.a8kj.ww.parent.utils.StringUtils;
 
 /**
  * Represents a menu that displays scheduled events.
- * 
+ *
  * <p>
- * This class extends {@link Menu} and implements the methods to define the
- * contents and settings of the menu. It handles the display of scheduled
- * events in a user-friendly manner.
+ * This class extends {@link Menu} and implements methods to define the
+ * contents and settings of the menu, providing a user-friendly display of
+ * scheduled events.
  * </p>
  */
 @RequiredArgsConstructor
@@ -33,10 +32,10 @@ public class SchedulesMenu extends Menu {
     private final List<ScheduledEvent> scheduledEvents;
 
     /**
-     * Defines the contents of the menu based on the scheduled events.
-     * 
+     * Populates the menu contents based on the scheduled events.
+     *
      * @param contents a map that associates slot numbers with item builders.
-     * @throws IllegalStateException if there are no scheduled events.
+     * @throws IllegalStateException if the scheduled events list is empty.
      */
     @Override
     public void defineContents(Map<Integer, ItemStackBuilder> contents) {
@@ -44,27 +43,38 @@ public class SchedulesMenu extends Menu {
             throw new IllegalStateException("Scheduled events cannot be empty!");
         }
 
-        final String spacing = "        "; // Define spacing constant
+        final String spacing = "        "; // Spacing for item lore
 
         for (int slot = 0; slot < scheduledEvents.size(); slot++) {
             ScheduledEvent scheduledEvent = scheduledEvents.get(slot);
-
-            String loreLine = String.format("&fDay: &c%s\n&fTime: &2%s",
-                    scheduledEvent.getDay(),
-                    StringUtils.formatTime(scheduledEvent.getHours(), scheduledEvent.getMinutes()));
-
-            contents.put(slot, new ItemStackBuilder(Material.PAPER)
-                    .setName("&b&lScheduled Event")
-                    .addLoreLine(spacing)
-                    .addLoreLine(loreLine)
-                    .addLoreLine(spacing));
+            contents.put(slot, createEventItem(slot, scheduledEvent, spacing));
         }
     }
 
     /**
-     * Defines the settings for the menu, such as size and title.
-     * 
-     * @param menuSettings the settings to be configured for the menu.
+     * Creates an item builder for a scheduled event.
+     *
+     * @param slot           the slot number for the item.
+     * @param scheduledEvent the scheduled event to display.
+     * @param spacing        the spacing string for lore.
+     * @return an ItemStackBuilder configured for the scheduled event.
+     */
+    private ItemStackBuilder createEventItem(int slot, ScheduledEvent scheduledEvent, String spacing) {
+        String loreLine = String.format("&fDay: &c%s\n&fTime: &2%s",
+                scheduledEvent.getDay(),
+                StringUtils.formatTime(scheduledEvent.getHours(), scheduledEvent.getMinutes()));
+
+        return new ItemStackBuilder(Material.PAPER)
+                .setName("&b&lScheduled Event")
+                .addLoreLine(spacing)
+                .addLoreLine(loreLine)
+                .addLoreLine(spacing);
+    }
+
+    /**
+     * Configures the menu settings, such as size and title.
+     *
+     * @param menuSettings the settings to be applied to the menu.
      */
     @Override
     public void defineSettings(MenuSettings menuSettings) {
@@ -73,31 +83,36 @@ public class SchedulesMenu extends Menu {
     }
 
     /**
-     * Handles inventory click events for the menu.
-     * 
+     * Handles click events within the inventory menu.
+     *
      * @param event the inventory click event.
      */
     @Override
     public void handleClick(InventoryClickEvent event) {
-        if (event.getClickedInventory() == null)
+        if (isInvalidClickEvent(event)) {
             return;
-        if (event.getCurrentItem() == null)
-            return;
-        if (event.getAction() == null)
-            return;
-        if (event.getClick() == null)
-            return;
-
-        if (event.getInventory() == null)
-            return;
-
-        if (event.getView() == null)
-            return;
+        }
 
         InventoryView inventoryView = event.getView();
         if (!inventoryView.getTitle().equalsIgnoreCase(getSettings().getTitle())) {
             return;
         }
-        event.setCancelled(true);
+
+        event.setCancelled(true); // Cancel the event if it's a valid click
+    }
+
+    /**
+     * Checks if the click event is valid.
+     *
+     * @param event the inventory click event.
+     * @return true if the event is invalid; otherwise, false.
+     */
+    private boolean isInvalidClickEvent(InventoryClickEvent event) {
+        return event.getClickedInventory() == null ||
+                event.getCurrentItem() == null ||
+                event.getAction() == null ||
+                event.getClick() == null ||
+                event.getInventory() == null ||
+                event.getView() == null;
     }
 }
