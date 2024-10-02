@@ -16,6 +16,7 @@ import me.a8kj.ww.internal.configuration.enums.EventPathIdentifiers;
 import me.a8kj.ww.internal.configuration.files.*;
 import me.a8kj.ww.internal.configuration.retrievers.EventRetriever;
 import me.a8kj.ww.internal.listeners.OtherListeners;
+import me.a8kj.ww.internal.listeners.menu.MenuListeners;
 import me.a8kj.ww.internal.listeners.mob.*;
 import me.a8kj.ww.internal.listeners.mob.optional.*;
 import me.a8kj.ww.internal.manager.ConfigurationManager;
@@ -67,7 +68,7 @@ public class WWPluginProvider implements PluginProvider {
         initializeScheduling();
         registerEventListeners();
         registerCommands();
-        registerMenu();
+        // registerMenu();
 
     }
 
@@ -93,16 +94,8 @@ public class WWPluginProvider implements PluginProvider {
      * Registers all necessary menu(s) for the plugin.
      */
     private void registerMenu() {
-
-        this.menus.putIfAbsent("schedules", new SchedulesMenu(this));
-
-        LocationsFile locationsFile = (LocationsFile) this.getConfigurationManager()
-                .getConfiguration("locations");
-        if (locationsFile == null) {
-            logger.severe("LocationsFile is null! Ensure it is loaded correctly.");
-            return;
-        }
-        this.menus.putIfAbsent("locations", new LocationsMenu(locationsFile));
+        this.menus.put("schedules", new SchedulesMenu(this));
+        this.menus.put("locations", new LocationsMenu(this));
     }
 
     /**
@@ -193,6 +186,7 @@ public class WWPluginProvider implements PluginProvider {
      * Registers core listeners that are always needed.
      */
     private void registerCoreListeners() {
+        plugin.getServer().getPluginManager().registerEvents(new MenuListeners(this), plugin);
         plugin.getServer().getPluginManager().registerEvents(new EntityDamageByEntityListener(this), plugin);
         plugin.getServer().getPluginManager().registerEvents(new MythicMobDeathListener(this), plugin);
         plugin.getServer().getPluginManager().registerEvents(new OtherListeners(this), plugin);

@@ -10,7 +10,7 @@ import me.a8kj.ww.parent.utils.LocationsUtils;
 
 public class LocationsFile extends Configuration {
     public LocationsFile(JavaPlugin plugin) {
-        super(plugin, "messages.yml", true);
+        super(plugin, "locations.yml", true);
     }
 
     public List<Location> getLocations() {

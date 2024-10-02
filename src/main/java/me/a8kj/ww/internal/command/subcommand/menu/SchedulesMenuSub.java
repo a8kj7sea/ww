@@ -51,7 +51,7 @@ public class SchedulesMenuSub extends PlayerSubCommand {
         }
 
         // Retrieve and open the schedules menu
-        SchedulesMenu schedulesMenu = (SchedulesMenu) pluginProvider.getMenus().get("schedules");
+        SchedulesMenu schedulesMenu = new SchedulesMenu(pluginProvider);
 
         source.getOpenInventory().close(); // Close the current inventory
         source.updateInventory(); // Update the player's inventory state

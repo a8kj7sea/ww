@@ -50,7 +50,7 @@ public class LocationMenuSub extends PlayerSubCommand {
         }
 
         // Retrieve and open the locations menu
-        LocationsMenu locationsMenu = (LocationsMenu) pluginProvider.getMenus().get("locations");
+        LocationsMenu locationsMenu = new LocationsMenu(pluginProvider);
 
         source.getOpenInventory().close(); // Close the current inventory
         source.updateInventory(); // Update player inventory state

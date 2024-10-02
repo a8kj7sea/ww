@@ -16,6 +16,7 @@ import me.a8kj.ww.internal.configuration.files.LocationsFile;
 import me.a8kj.ww.parent.entity.menu.Menu;
 import me.a8kj.ww.parent.entity.menu.attributes.MenuSettings;
 import me.a8kj.ww.parent.entity.menu.enums.MenuSize;
+import me.a8kj.ww.parent.entity.plugin.PluginProvider;
 import me.a8kj.ww.parent.utils.ItemStackBuilder;
 import me.a8kj.ww.parent.utils.LocationsUtils;
 
@@ -32,7 +33,7 @@ import me.a8kj.ww.parent.utils.LocationsUtils;
 @Getter
 public class LocationsMenu extends Menu {
 
-    private final LocationsFile locationsFile;
+    private final PluginProvider pluginProvider;
 
     /**
      * Populates the menu contents based on the available locations.
@@ -42,12 +43,19 @@ public class LocationsMenu extends Menu {
      */
     @Override
     public void defineContents(Map<Integer, ItemStackBuilder> contents) {
+        LocationsFile locationsFile = (LocationsFile) pluginProvider.getConfigurationManager()
+                .getConfiguration("locations");
 
+        if (locationsFile == null) {
+            Bukkit.getLogger().warning("locationsFile were not loaded;");
+            return;
+        }
         List<Location> locations = locationsFile.getLocations();
 
         if (locations == null) {
             locations = new ArrayList<>(); // Initialize to an empty list if null
             Bukkit.getLogger().warning("Locations were not loaded; using an empty list.");
+            return;
         }
 
         if (locations.isEmpty()) {
