@@ -1,0 +1,20 @@
+name: "WereWolf"
+api-version: "1.20.6" # Specifies the Minecraft API version
+api: "1.20.6"
+version: "0.6" # Current plugin version
+main: "me.a8kj.ww.internal.plugin.EventMobPlugin" # Main class path
+author: "a8kj7sea" # Plugin author
+description: "A custom project made for client Astrotix by a8kj7sea" # Plugin description
+website: "https://github.com/a8kj7sea" # Author's website or GitHub link
+
+# Dependencies required for this plugin to function
+depends:
+  - WorldGuard
+  - MythicMobs
+
+# Command configuration
+commands:
+  werewolf:
+    permission: "werewolf-plugin.admin" # Permission required to use this command
+    description: "Main command for Werewolf plugin" # Command description
+    aliases: ["lg", "wfevent", "werewolf-event", "wwevent"] # Command aliases

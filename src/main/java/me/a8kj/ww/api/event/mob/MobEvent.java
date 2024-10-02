@@ -3,6 +3,8 @@ package me.a8kj.ww.api.event.mob;
 import org.bukkit.Bukkit;
 import org.bukkit.event.Event;
 import org.bukkit.event.HandlerList;
+import org.checkerframework.checker.units.qual.h;
+
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import me.a8kj.ww.parent.entity.mob.EventMob;
@@ -22,6 +24,10 @@ public abstract class MobEvent extends Event {
 
     @Override
     public HandlerList getHandlers() {
+        return handlers;
+    }
+
+    public static HandlerList getHandlerList() {
         return handlers;
     }
 

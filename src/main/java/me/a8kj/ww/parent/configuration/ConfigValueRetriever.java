@@ -1,6 +1,8 @@
 package me.a8kj.ww.parent.configuration;
 
 import java.util.List;
+
+import org.bukkit.Bukkit;
 import org.bukkit.configuration.file.YamlConfiguration;
 import lombok.NonNull;
 
@@ -41,8 +43,10 @@ public interface ConfigValueRetriever<E extends Enum<E> & PathIdentifier> {
      * @throws IllegalArgumentException if the type does not match.
      */
     default void validateType(@NonNull E pathId, Class<?> type) {
-        if (!type.isInstance(pathId.getType())) {
-            throw new IllegalArgumentException("Please choose a valid argument type!");
+        Object value = getYamlConfiguration().get(pathId.getPath());
+        if (value != null && !type.isInstance(value)) {
+            throw new IllegalArgumentException(
+                    "Expected type: " + type.getSimpleName() + ", but got: " + value.getClass().getSimpleName());
         }
     }
 
@@ -81,7 +85,14 @@ public interface ConfigValueRetriever<E extends Enum<E> & PathIdentifier> {
      * @return The Boolean value at the specified path.
      */
     default boolean getBoolean(@NonNull E pathId) {
-        return getValue(pathId, Boolean.class); // Delegate to getValue for Boolean type
+        try {
+            return getValue(pathId, Boolean.class);
+        } catch (IllegalArgumentException e) {
+            // Log the error with additional context
+            Bukkit.getLogger()
+                    .severe("Failed to retrieve boolean for path: " + pathId.getPath() + " - " + e.getMessage());
+            return false; // or a default value
+        }
     }
 
     /**

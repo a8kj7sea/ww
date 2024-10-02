@@ -22,8 +22,8 @@ public abstract class Menu implements MenuHandler {
      * Constructs a Menu instance and initializes its contents and settings.
      */
     public Menu() {
-        defineContents(contents);
         defineSettings(settings);
+        defineContents(contents);
     }
 
     /**

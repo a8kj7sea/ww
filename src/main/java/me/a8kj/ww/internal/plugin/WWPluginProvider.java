@@ -11,6 +11,7 @@ import com.google.common.collect.Sets;
 
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
+import me.a8kj.ww.internal.command.LGCommand;
 import me.a8kj.ww.internal.configuration.enums.EventPathIdentifiers;
 import me.a8kj.ww.internal.configuration.files.*;
 import me.a8kj.ww.internal.configuration.retrievers.EventRetriever;
@@ -19,6 +20,8 @@ import me.a8kj.ww.internal.listeners.mob.*;
 import me.a8kj.ww.internal.listeners.mob.optional.*;
 import me.a8kj.ww.internal.manager.ConfigurationManager;
 import me.a8kj.ww.internal.manager.GameManager;
+import me.a8kj.ww.internal.menu.LocationsMenu;
+import me.a8kj.ww.internal.menu.SchedulesMenu;
 import me.a8kj.ww.internal.schedules.EventsScheduler;
 import me.a8kj.ww.internal.schedules.SchedulesManager;
 import me.a8kj.ww.internal.schedules.handlers.LoadHandler;
@@ -60,10 +63,12 @@ public class WWPluginProvider implements PluginProvider {
     @Override
     public void onStart() {
         initializeManagers();
-        registerConfigurations();
         checkGameSetup();
         initializeScheduling();
         registerEventListeners();
+        registerCommands();
+        registerMenu();
+
     }
 
     /**
@@ -80,7 +85,32 @@ public class WWPluginProvider implements PluginProvider {
      */
     private void initializeManagers() {
         configurationManager = new ConfigurationManager(configurations);
+        registerConfigurations();
         gameManager = new GameManager(this);
+    }
+
+    /**
+     * Registers all necessary menu(s) for the plugin.
+     */
+    private void registerMenu() {
+
+        this.menus.putIfAbsent("schedules", new SchedulesMenu(this));
+
+        LocationsFile locationsFile = (LocationsFile) this.getConfigurationManager()
+                .getConfiguration("locations");
+        if (locationsFile == null) {
+            logger.severe("LocationsFile is null! Ensure it is loaded correctly.");
+            return;
+        }
+        this.menus.putIfAbsent("locations", new LocationsMenu(locationsFile));
+    }
+
+    /**
+     * Registers all necessary command(s) for the plugin.
+     */
+    private void registerCommands() {
+        this.getPlugin().getCommand("werewolf").setExecutor(new LGCommand(this));
+        this.getPlugin().getCommand("werewolf").setTabCompleter(new LGCommand(this));
     }
 
     /**
@@ -186,4 +216,5 @@ public class WWPluginProvider implements PluginProvider {
             schedulerTask.cancel();
         }
     }
+
 }

@@ -133,7 +133,9 @@ public class LGCommand extends PlayerCommand {
     public void defineSubs(@NonNull Map<String, SubCommand<Player>> subCommands) {
         // other subs
         subCommands.put("reload", new ReloadConfigSub(pluginProvider));
-        subCommands.put("help", new HelpSub(pluginProvider));
+        HelpSub helpSub = new HelpSub(pluginProvider);
+        helpSub.defineSubCommands(subCommands);
+        subCommands.put("help", helpSub);
 
         // setup subs :)
         subCommands.put("addloc", new AddSpawnLocationSub(pluginProvider));
@@ -145,7 +147,7 @@ public class LGCommand extends PlayerCommand {
 
         // game logic
         subCommands.put("start", new StartGameSub(pluginProvider));
-        subCommands.put("schedules", new EndGameSub(pluginProvider));
+        subCommands.put("end", new EndGameSub(pluginProvider));
 
     }
 }

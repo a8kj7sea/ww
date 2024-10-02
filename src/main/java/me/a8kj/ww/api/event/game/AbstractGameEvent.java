@@ -27,6 +27,10 @@ public abstract class AbstractGameEvent extends Event {
         return handlers;
     }
 
+    public static HandlerList getHandlerList() {
+        return handlers;
+    }
+
     /**
      * Calls the event through the Bukkit plugin manager.
      * Logs a debug message indicating that the event was called successfully.
@@ -36,4 +40,5 @@ public abstract class AbstractGameEvent extends Event {
         Bukkit.getLogger()
                 .info(String.format("[DEBUG-MODE] %s called successfully for game", getClass().getSimpleName()));
     }
+
 }

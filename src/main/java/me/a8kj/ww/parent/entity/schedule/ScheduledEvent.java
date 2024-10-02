@@ -9,6 +9,7 @@ import org.bukkit.configuration.serialization.SerializableAs;
 
 import lombok.Data;
 import lombok.Getter;
+import lombok.ToString;
 import me.a8kj.ww.parent.entity.schedule.attributes.TimeCalculator;
 
 /**
@@ -19,6 +20,7 @@ import me.a8kj.ww.parent.entity.schedule.attributes.TimeCalculator;
  */
 @Getter
 @Data
+@ToString
 @SerializableAs("ScheduledEvent")
 public class ScheduledEvent implements ConfigurationSerializable {
 
@@ -77,4 +79,5 @@ public class ScheduledEvent implements ConfigurationSerializable {
 
         return new ScheduledEvent(day, hours, minutes);
     }
+
 }

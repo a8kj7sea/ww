@@ -32,7 +32,20 @@ public class MessageRetriever implements ConfigValueRetriever<MessagePathIdentif
      */
     public String getMessage(@NonNull MessagePathIdentifiers pathId) {
         String message = ConfigValueRetriever.super.getString(pathId);
-        return StringUtils.legacyColorize(message).replace("%prefix%", getMessage(MessagePathIdentifiers.PREFIX));
+        String prefix = getPrefix(); // Call a new method to get the prefix
+        return StringUtils.legacyColorize(message).replace("%prefix%", prefix);
+    }
+
+    /**
+     * Get prefix that used in messages
+     * 
+     * @return prefix of plugin
+     */
+    private String getPrefix() {
+        return StringUtils.legacyColorize(ConfigValueRetriever.super.getString(MessagePathIdentifiers.PREFIX)); // Retrieve
+                                                                                                                // the
+                                                                                                                // prefix
+                                                                                                                // separately
     }
 
     /**
@@ -76,4 +89,5 @@ public class MessageRetriever implements ConfigValueRetriever<MessagePathIdentif
                 .map(StringUtils::legacyColorize)
                 .collect(Collectors.toList());
     }
+
 }

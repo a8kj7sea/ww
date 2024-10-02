@@ -7,6 +7,7 @@ import org.bukkit.plugin.java.JavaPlugin;
 import java.util.Arrays;
 import java.util.List;
 import lombok.Getter;
+import me.a8kj.ww.parent.entity.plugin.PluginProvider;
 import me.a8kj.ww.parent.entity.schedule.ScheduledEvent;
 
 /**
@@ -16,7 +17,7 @@ import me.a8kj.ww.parent.entity.schedule.ScheduledEvent;
 public class EventMobPlugin extends JavaPlugin {
 
     @Getter
-    private static WWPluginProvider pluginProvider;
+    private static PluginProvider pluginProvider;
 
     /**
      * Called when the plugin is enabled.
@@ -38,6 +39,7 @@ public class EventMobPlugin extends JavaPlugin {
 
         // Log success message
         Bukkit.getConsoleSender().sendMessage("\u00a7aWW-Plugin has been enabled successfully!");
+
     }
 
     /**

@@ -1,8 +1,10 @@
 package me.a8kj.ww.internal.menu;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.event.inventory.InventoryClickEvent;
@@ -10,6 +12,7 @@ import org.bukkit.inventory.InventoryView;
 
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
+import me.a8kj.ww.internal.configuration.files.LocationsFile;
 import me.a8kj.ww.parent.entity.menu.Menu;
 import me.a8kj.ww.parent.entity.menu.attributes.MenuSettings;
 import me.a8kj.ww.parent.entity.menu.enums.MenuSize;
@@ -29,7 +32,7 @@ import me.a8kj.ww.parent.utils.LocationsUtils;
 @Getter
 public class LocationsMenu extends Menu {
 
-    private final List<Location> locations;
+    private final LocationsFile locationsFile;
 
     /**
      * Populates the menu contents based on the available locations.
@@ -39,8 +42,17 @@ public class LocationsMenu extends Menu {
      */
     @Override
     public void defineContents(Map<Integer, ItemStackBuilder> contents) {
+
+        List<Location> locations = locationsFile.getLocations();
+
+        if (locations == null) {
+            locations = new ArrayList<>(); // Initialize to an empty list if null
+            Bukkit.getLogger().warning("Locations were not loaded; using an empty list.");
+        }
+
         if (locations.isEmpty()) {
-            throw new IllegalStateException("Locations list cannot be empty!");
+            Bukkit.getLogger().warning("Locations list cannot be empty!");
+            return;
         }
 
         final String spacing = "        "; // Spacing for item lore

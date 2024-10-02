@@ -1,8 +1,11 @@
 package me.a8kj.ww.internal.menu;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
+import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.inventory.InventoryView;
@@ -12,6 +15,7 @@ import lombok.RequiredArgsConstructor;
 import me.a8kj.ww.parent.entity.menu.Menu;
 import me.a8kj.ww.parent.entity.menu.attributes.MenuSettings;
 import me.a8kj.ww.parent.entity.menu.enums.MenuSize;
+import me.a8kj.ww.parent.entity.plugin.PluginProvider;
 import me.a8kj.ww.parent.entity.schedule.ScheduledEvent;
 import me.a8kj.ww.parent.utils.ItemStackBuilder;
 import me.a8kj.ww.parent.utils.StringUtils;
@@ -29,7 +33,7 @@ import me.a8kj.ww.parent.utils.StringUtils;
 @Getter
 public class SchedulesMenu extends Menu {
 
-    private final List<ScheduledEvent> scheduledEvents;
+    private final PluginProvider pluginProvider;
 
     /**
      * Populates the menu contents based on the scheduled events.
@@ -39,14 +43,25 @@ public class SchedulesMenu extends Menu {
      */
     @Override
     public void defineContents(Map<Integer, ItemStackBuilder> contents) {
-        if (scheduledEvents.isEmpty()) {
-            throw new IllegalStateException("Scheduled events cannot be empty!");
+
+        if (pluginProvider == null) {
+            Bukkit.getLogger().severe("Plugin provider cannot be null!");
+            return;
+        }
+
+        Set<ScheduledEvent> scheduledEvents = pluginProvider.getEventScheduler().getScheduledEvents();
+
+        if (scheduledEvents == null || scheduledEvents.isEmpty()) {
+            Bukkit.getLogger().warning("Scheduled events cannot be empty!");
+            return;
         }
 
         final String spacing = "        "; // Spacing for item lore
 
-        for (int slot = 0; slot < scheduledEvents.size(); slot++) {
-            ScheduledEvent scheduledEvent = scheduledEvents.get(slot);
+        List<ScheduledEvent> eventList = new ArrayList<>(scheduledEvents);
+
+        for (int slot = 0; slot < eventList.size(); slot++) {
+            ScheduledEvent scheduledEvent = eventList.get(slot);
             contents.put(slot, createEventItem(slot, scheduledEvent, spacing));
         }
     }

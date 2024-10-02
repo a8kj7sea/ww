@@ -35,6 +35,10 @@ public class AnnounceDropEvent extends Event {
         return handlers;
     }
 
+    public static HandlerList getHandlerList() {
+        return handlers;
+    }
+
     /**
      * Calls the event through the Bukkit plugin manager.
      * Logs a debug message indicating that the event was called successfully.
