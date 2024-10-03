@@ -5,8 +5,6 @@ import lombok.Getter;
 import lombok.NonNull;
 import me.a8kj.ww.api.event.game.impl.EndGameEvent;
 import me.a8kj.ww.api.event.game.impl.EndGameEvent.EndReason;
-import me.a8kj.ww.internal.configuration.files.EventsFile;
-import me.a8kj.ww.internal.configuration.retrievers.EventRetriever;
 import me.a8kj.ww.parent.entity.game.EventGame;
 import me.a8kj.ww.parent.entity.game.enums.GameState;
 import me.a8kj.ww.parent.entity.game.enums.NextPhase;
@@ -48,21 +46,18 @@ public class EndMechanic extends GameMechanic {
         EventMob mob = game.getEventMob();
 
         if (mob == null) {
-            throw new IllegalStateException(
-                    "Mob cannot be null. Please check the mob configuration or restart the server.");
+            throw new IllegalStateException("Failed to end game: Mob is null. Check mob configuration.");
         }
 
-        EventsFile eventsFile = (EventsFile) pluginProvider.getConfigurationManager().getConfiguration("events");
-        EventRetriever eventRetriever = new EventRetriever(eventsFile.getYamConfiguration());
-
-        // Always trigger the end game event without checks
-        if (endReason == EndReason.COMMAND) {
-            if (!mob.despawn()) {
-                throw new IllegalStateException("Error while despawning mob!");
-            }
+        // Handle mob despawning logic for any valid end reason
+        if (!despawnMob(mob)) {
+            throw new IllegalStateException("Failed to despawn mob! Game cannot end.");
         }
-        triggerEndGameEvent(game, eventRetriever);
 
+        // Trigger EndGameEvent
+        triggerEndGameEvent(game);
+
+        // Update the game's state and phase
         updateGamePhaseAndState(game);
     }
 
@@ -81,13 +76,29 @@ public class EndMechanic extends GameMechanic {
     }
 
     /**
-     * Triggers the EndGameEvent if configured.
+     * Triggers the EndGameEvent.
      *
-     * @param game           The EventGame associated with this event.
-     * @param eventRetriever The event retriever for checking configuration.
+     * @param game The EventGame associated with this event.
      */
-    private void triggerEndGameEvent(EventGame game, EventRetriever eventRetriever) {
-        new EndGameEvent(game, endReason).callEvent();
+    private void triggerEndGameEvent(EventGame game) {
+        // Always trigger the end event
+        EndGameEvent endGameEvent = new EndGameEvent(game, endReason);
+        Bukkit.getServer().getPluginManager().callEvent(endGameEvent);
+    }
+
+    /**
+     * Despawns the mob safely.
+     *
+     * @param mob The mob to despawn.
+     * @return true if the mob was successfully despawned, false otherwise.
+     */
+    private boolean despawnMob(EventMob mob) {
+        // Attempt to despawn the mob
+        boolean isDespawned = mob.despawn();
+        if (!isDespawned) {
+            Bukkit.getLogger().severe("[ERROR] Mob failed to despawn. Mob: " + mob);
+        }
+        return isDespawned;
     }
 
     /**

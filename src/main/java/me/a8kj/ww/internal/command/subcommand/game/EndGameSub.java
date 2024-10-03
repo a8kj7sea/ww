@@ -46,12 +46,12 @@ public class EndGameSub extends PlayerSubCommand {
         GameManager gameManager = pluginProvider.getGameManager();
 
         // Check if there is a current game
-        if (!gameManager.getCurrentGame().isPresent()) {
+        if (gameManager.getCurrentGame().isEmpty()) {
             source.sendMessage(getMessageRetriever().getMessage(MessagePathIdentifiers.COMMAND_STOP_GAME_FAILURE));
             return; // Exit early if no game is active
         }
 
-        EventGame game = gameManager.getCurrentGame().get();
+        EventGame game = gameManager.getCurrentGame().orElseThrow(); // Retrieve the game
 
         // Check if the current game is in progress
         if (game.getGameState() != GameState.INGAME) {
@@ -59,6 +59,7 @@ public class EndGameSub extends PlayerSubCommand {
             return; // Exit early if the game is not in progress
         }
 
+        // End the game and notify the player
         gameManager.endGame(EndReason.COMMAND);
         source.sendMessage(getMessageRetriever().getMessage(MessagePathIdentifiers.COMMAND_STOP_GAME_SUCCESS));
     }

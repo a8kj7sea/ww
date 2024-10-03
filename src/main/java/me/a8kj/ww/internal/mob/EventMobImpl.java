@@ -20,9 +20,9 @@ import me.a8kj.ww.parent.utils.LocationsUtils;
 import me.a8kj.ww.parent.utils.MathUtils;
 
 /**
- * This class implements the {@link EventMob} interface, providing the
- * functionality
- * to manage and handle event-related mobs using MythicMobs in Bukkit.
+ * Implementation of the {@link EventMob} interface to manage and handle
+ * event-related
+ * mobs using MythicMobs in Bukkit.
  */
 public class EventMobImpl implements EventMob {
 
@@ -34,9 +34,10 @@ public class EventMobImpl implements EventMob {
 
     /**
      * Constructor for creating an instance of {@code EventMobImpl}.
-     * 
+     *
      * @param name           The name of the MythicMob to be managed.
-     * @param yConfiguration The YAML configuration containing mob details.
+     * @param yConfiguration The YAML configuration containing mob details,
+     *                       including spawn locations.
      */
     public EventMobImpl(@NonNull String name, @NonNull YamlConfiguration yConfiguration) {
         this.name = name;
@@ -48,72 +49,37 @@ public class EventMobImpl implements EventMob {
     /**
      * Spawns the MythicMob at a random location from the configured spawn
      * locations.
-     * Returns true if the mob was successfully spawned, otherwise throws an
-     * exception.
-     *
+     * 
      * @return true if the mob is spawned successfully.
-     * @throws IllegalStateException if the mob is already alive, if the mob cannot
-     *                               be found, or if spawning fails.
+     * @throws IllegalStateException if the mob is already alive, cannot be found,
+     *                               or if spawning fails.
      */
     @Override
     public boolean spawn() {
-
-        Preconditions.checkArgument(!isAlive(), "Entity is already alive!");
-
-        MythicMob mythicMob = mythicBukkit.getMobManager().getMythicMob(name)
-                .orElseThrow(() -> new IllegalStateException(
-                        "Couldn't find entity with this name, please make sure you have input a valid name"));
-
-        // Pick a random spawn location
-        Location spawnLocation = MathUtils.pickRandomElement(spawnLocations);
-
-        ActiveMob activeMob = mythicMob.spawn(BukkitAdapter.adapt(spawnLocation), 0);
-        if (activeMob == null)
-            throw new IllegalStateException("Failed to get ActiveMob!");
-
-        Entity entity = activeMob.getEntity().getBukkitEntity();
-        if (entity == null)
-            throw new IllegalStateException("Failed to get BukkitEntity!");
-
-        this.activeMob = activeMob;
-        this.bukkitEntity = entity;
-
-        Bukkit.getLogger()
-                .info("[DEBUG-MODE] Entity with this name " + name + " spawned at " + spawnLocation + " successfully!");
-
+        checkIfAlreadyAlive();
+        MythicMob mythicMob = getMythicMob();
+        Location spawnLocation = getRandomSpawnLocation();
+        spawnMob(mythicMob, spawnLocation);
         return true;
     }
 
     /**
      * Despawns the currently active MythicMob, if it exists and is alive.
-     * Returns true if the mob is successfully despawned, otherwise throws an
-     * exception.
-     *
-     * @return true if the mob is despawned successfully.
-     * @throws IllegalStateException if the mob is not alive, already despawned, or
-     *                               does not exist.
+     * 
+     * @return true if the mob is successfully despawned.
+     * @throws IllegalStateException if the mob is not alive or does not exist.
      */
     @Override
     public boolean despawn() {
-        if (!getActiveMob().isPresent() || !getBukkitEntity().isPresent()) {
-            throw new IllegalStateException(
-                    "Couldn't find entity with this name. Please make sure you have input a valid name.");
-        }
-
-        if (!isValid() || !isAlive())
-            throw new IllegalStateException(
-                    "You cannot despawn an entity that has not spawned yet or has already died!");
-
-        this.activeMob.despawn();
-        Bukkit.getLogger().info("[DEBUG-MODE] Entity despawned successfully!");
-
+        checkIfCanDespawn();
+        performDespawn();
         return true;
     }
 
     /**
-     * Returns the name of the mob being managed.
+     * Retrieves the name of the mob being managed.
      * 
-     * @return The name of the mob.
+     * @return the name of the MythicMob.
      */
     @Override
     public String getName() {
@@ -121,9 +87,9 @@ public class EventMobImpl implements EventMob {
     }
 
     /**
-     * Returns the list of spawn locations for the mob.
+     * Retrieves the list of spawn locations for the mob.
      * 
-     * @return A list of {@link Location} where the mob can spawn.
+     * @return a list of {@link Location} objects where the mob can spawn.
      */
     @Override
     public List<Location> getSpawnLocations() {
@@ -133,7 +99,7 @@ public class EventMobImpl implements EventMob {
     /**
      * Retrieves the currently active {@link ActiveMob}.
      * 
-     * @return An {@link Optional} containing the active mob, or empty if none
+     * @return an {@link Optional} containing the active mob, or empty if none
      *         exists.
      */
     @Override
@@ -144,7 +110,7 @@ public class EventMobImpl implements EventMob {
     /**
      * Retrieves the corresponding Bukkit entity of the mob.
      * 
-     * @return An {@link Optional} containing the Bukkit entity, or empty if none
+     * @return an {@link Optional} containing the Bukkit entity, or empty if none
      *         exists.
      */
     @Override
@@ -170,5 +136,86 @@ public class EventMobImpl implements EventMob {
     @Override
     public boolean isValid() {
         return bukkitEntity != null && bukkitEntity.isValid();
+    }
+
+    /**
+     * Ensures that the mob is not already alive before attempting to spawn it.
+     * 
+     * @throws IllegalStateException if the mob is already alive.
+     */
+    private void checkIfAlreadyAlive() {
+        Preconditions.checkArgument(!isAlive(), "Entity is already alive!");
+    }
+
+    /**
+     * Retrieves the MythicMob instance based on the configured name.
+     * 
+     * @return the {@link MythicMob} instance corresponding to the name.
+     * @throws IllegalStateException if the mob cannot be found.
+     */
+    private MythicMob getMythicMob() {
+        return mythicBukkit.getMobManager().getMythicMob(name)
+                .orElseThrow(() -> new IllegalStateException(
+                        "Couldn't find entity with this name, please make sure you have input a valid name"));
+    }
+
+    /**
+     * Retrieves a random spawn location from the list of configured locations.
+     * 
+     * @return the selected {@link Location}.
+     */
+    private Location getRandomSpawnLocation() {
+        return MathUtils.pickRandomElement(spawnLocations);
+    }
+
+    /**
+     * Spawns the MythicMob at the given location.
+     * 
+     * @param mythicMob     the {@link MythicMob} to spawn.
+     * @param spawnLocation the {@link Location} where the mob should be spawned.
+     * @throws IllegalStateException if the mob or entity fails to spawn.
+     */
+    private void spawnMob(MythicMob mythicMob, Location spawnLocation) {
+        ActiveMob activeMob = mythicMob.spawn(BukkitAdapter.adapt(spawnLocation), 0);
+        if (activeMob == null) {
+            throw new IllegalStateException("Failed to get ActiveMob!");
+        }
+
+        Entity entity = activeMob.getEntity().getBukkitEntity();
+        if (entity == null) {
+            throw new IllegalStateException("Failed to get BukkitEntity!");
+        }
+
+        this.activeMob = activeMob;
+        this.bukkitEntity = entity;
+
+        Bukkit.getLogger()
+                .info("[DEBUG-MODE] Entity with this name " + name + " spawned at " + spawnLocation + " successfully!");
+    }
+
+    /**
+     * Ensures that the mob is alive and valid before despawning.
+     * 
+     * @throws IllegalStateException if the mob cannot be despawned due to it not
+     *                               being alive or valid.
+     */
+    private void checkIfCanDespawn() {
+        if (!getActiveMob().isPresent() || !getBukkitEntity().isPresent()) {
+            throw new IllegalStateException(
+                    "Couldn't find entity with this name. Please make sure you have input a valid name.");
+        }
+
+        if (!isValid() || !isAlive()) {
+            throw new IllegalStateException(
+                    "You cannot despawn an entity that has not spawned yet or has already died!");
+        }
+    }
+
+    /**
+     * Performs the despawning of the currently active mob.
+     */
+    private void performDespawn() {
+        this.activeMob.despawn();
+        Bukkit.getLogger().info("[DEBUG-MODE] Entity despawned successfully!");
     }
 }

@@ -86,12 +86,35 @@ public class GameManager {
     }
 
     /**
+     * Determines if the game can be started.
+     *
+     * <p>
+     * The game can start if:
+     * - The setup is complete (spawn locations are defined).
+     * - The current game exists and is in the IDLE state.
+     * - The next game phase is set to START.
+     * </p>
+     *
+     * @return true if the game can be started, false otherwise.
+     */
+    public boolean canStartGame() {
+        return currentGame != null
+                && currentGame.getGameState() == GameState.IDLE
+                && currentGame.getNextGamePhase() == NextPhase.START
+                && checkSetup(); // Ensures the setup (like spawn locations) is complete
+    }
+
+    /**
      * Starts the current game using the StartMechanic.
      */
     public void startGame() {
-        if (currentGame != null) {
+        if (canStartGame()) {
             StartMechanic startMechanic = new StartMechanic(pluginProvider);
             startMechanic.apply(currentGame);
+            Bukkit.getLogger().info("[DEBUG] Game started successfully.");
+        } else {
+            Bukkit.getLogger().warning(
+                    "[DEBUG] Cannot start the game. Check if the setup is complete or if the game is in the correct state.");
         }
     }
 

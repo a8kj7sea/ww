@@ -4,6 +4,7 @@ import java.util.*;
 import java.util.logging.Logger;
 
 import org.bukkit.Bukkit;
+import org.bukkit.event.Listener;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import com.google.common.collect.Maps;
@@ -21,15 +22,15 @@ import me.a8kj.ww.internal.listeners.mob.*;
 import me.a8kj.ww.internal.listeners.mob.optional.*;
 import me.a8kj.ww.internal.manager.ConfigurationManager;
 import me.a8kj.ww.internal.manager.GameManager;
-import me.a8kj.ww.internal.menu.LocationsMenu;
-import me.a8kj.ww.internal.menu.SchedulesMenu;
 import me.a8kj.ww.internal.schedules.EventsScheduler;
 import me.a8kj.ww.internal.schedules.SchedulesManager;
 import me.a8kj.ww.internal.schedules.handlers.LoadHandler;
 import me.a8kj.ww.internal.schedules.handlers.SaveHandler;
+import me.a8kj.ww.internal.task.MobWatcherTask;
 import me.a8kj.ww.internal.task.SchedulerTask;
 import me.a8kj.ww.parent.configuration.Configuration;
 import me.a8kj.ww.parent.entity.menu.Menu;
+import me.a8kj.ww.parent.entity.mob.EventMob;
 import me.a8kj.ww.parent.entity.plugin.PluginProvider;
 import me.a8kj.ww.parent.entity.schedule.EventScheduler;
 import me.a8kj.ww.parent.entity.schedule.ScheduledEvent;
@@ -50,12 +51,15 @@ public class WWPluginProvider implements PluginProvider {
 
     private ConfigurationManager configurationManager;
     private GameManager gameManager;
-
     private SchedulesManager schedulesManager;
     private EventScheduler eventScheduler;
     private SchedulerTask schedulerTask;
-
+    private MobWatcherTask mobWatcherTask;
     private final Set<ScheduledEvent> scheduledEvents = Sets.newHashSet();
+
+    private static final String NO_SCHEDULES_WARNING = "[DEBUG-MODE] There is no schedules event to load!";
+    private static final String GAME_NOT_SET_WARNING = "[DEBUG-MODE] Please set game by adding spawn locations!";
+    private static final String PLUGIN_DISABLED_MESSAGE = "\u00a7cWW-Plugin has been disabled!";
 
     /**
      * Starts the plugin by initializing managers, loading configurations,
@@ -69,7 +73,6 @@ public class WWPluginProvider implements PluginProvider {
         registerEventListeners();
         registerCommands();
         // registerMenu();
-
     }
 
     /**
@@ -91,19 +94,16 @@ public class WWPluginProvider implements PluginProvider {
     }
 
     /**
-     * Registers all necessary menu(s) for the plugin.
-     */
-    private void registerMenu() {
-        this.menus.put("schedules", new SchedulesMenu(this));
-        this.menus.put("locations", new LocationsMenu(this));
-    }
-
-    /**
      * Registers all necessary command(s) for the plugin.
      */
     private void registerCommands() {
-        this.getPlugin().getCommand("werewolf").setExecutor(new LGCommand(this));
-        this.getPlugin().getCommand("werewolf").setTabCompleter(new LGCommand(this));
+        var command = this.plugin.getCommand("werewolf");
+        if (command != null) {
+            command.setExecutor(new LGCommand(this));
+            command.setTabCompleter(new LGCommand(this));
+        } else {
+            logger.warning("Command 'werewolf' is not registered!");
+        }
     }
 
     /**
@@ -123,7 +123,7 @@ public class WWPluginProvider implements PluginProvider {
      */
     private void checkGameSetup() {
         if (!gameManager.checkSetup()) {
-            logger.warning("[DEBUG-MODE] Please set game by adding spawn locations!");
+            logger.warning(GAME_NOT_SET_WARNING);
         }
     }
 
@@ -140,7 +140,7 @@ public class WWPluginProvider implements PluginProvider {
         schedulesManager.getRegistry().register("save", new SaveHandler(schedulesFile, scheduledEvents));
 
         if (!schedulesFile.getYamConfiguration().contains("schedules")) {
-            logger.warning("[DEBUG-MODE] There is no schedules event to load!");
+            logger.warning(NO_SCHEDULES_WARNING);
         } else {
             schedulesManager.handleProcessByName("load");
             schedulerTask = new SchedulerTask(this);
@@ -165,20 +165,18 @@ public class WWPluginProvider implements PluginProvider {
      * @param eventRetriever The event retriever to check for enabled events.
      */
     private void registerConditionalListeners(EventRetriever eventRetriever) {
-        if (!eventRetriever.getBoolean(EventPathIdentifiers.END_GAME_EVENT)) {
-            plugin.getServer().getPluginManager().registerEvents(new EndGameListener(this), plugin);
-        }
-        if (!eventRetriever.getBoolean(EventPathIdentifiers.START_GAME_EVENT)) {
-            plugin.getServer().getPluginManager().registerEvents(new StartGameListener(this), plugin);
-        }
-        if (!eventRetriever.getBoolean(EventPathIdentifiers.ANNOUNCE_DROP_EVENT)) {
-            plugin.getServer().getPluginManager().registerEvents(new AnnounceDropListener(), plugin);
-        }
-        if (!eventRetriever.getBoolean(EventPathIdentifiers.MOB_MOVE_EVENT)) {
-            plugin.getServer().getPluginManager().registerEvents(new MobMoveListener(this), plugin);
-        }
-        if (!eventRetriever.getBoolean(EventPathIdentifiers.SPAWN_MOB_EVENT)) {
-            plugin.getServer().getPluginManager().registerEvents(new SpawnMobListener(this), plugin);
+        registerListenerIfDisabled(eventRetriever, EventPathIdentifiers.END_GAME_EVENT, new EndGameListener(this));
+        registerListenerIfDisabled(eventRetriever, EventPathIdentifiers.START_GAME_EVENT, new StartGameListener(this));
+        registerListenerIfDisabled(eventRetriever, EventPathIdentifiers.ANNOUNCE_DROP_EVENT,
+                new AnnounceDropListener());
+        registerListenerIfDisabled(eventRetriever, EventPathIdentifiers.MOB_MOVE_EVENT, new MobMoveListener(this));
+        registerListenerIfDisabled(eventRetriever, EventPathIdentifiers.SPAWN_MOB_EVENT, new SpawnMobListener(this));
+    }
+
+    private void registerListenerIfDisabled(EventRetriever eventRetriever, EventPathIdentifiers identifier,
+            Listener listener) {
+        if (!eventRetriever.getBoolean(identifier)) {
+            plugin.getServer().getPluginManager().registerEvents(listener, plugin);
         }
     }
 
@@ -205,10 +203,14 @@ public class WWPluginProvider implements PluginProvider {
      * Cancels the scheduled task and logs a message to the console.
      */
     private void disablePlugin() {
-        Bukkit.getConsoleSender().sendMessage("\u00a7cWW-Plugin has been disabled!");
+        Bukkit.getConsoleSender().sendMessage(PLUGIN_DISABLED_MESSAGE);
         if (schedulerTask != null) {
             schedulerTask.cancel();
         }
     }
 
+    @Override
+    public void defineMobWatcherTask(PluginProvider pluginProvider, EventMob mob) {
+        mobWatcherTask = new MobWatcherTask(pluginProvider, mob);
+    }
 }

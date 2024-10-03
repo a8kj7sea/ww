@@ -3,7 +3,7 @@ package me.a8kj.ww.internal.game.mechanic;
 import lombok.NonNull;
 import me.a8kj.ww.api.event.game.impl.StartGameEvent;
 import me.a8kj.ww.api.event.mob.impl.SpawnMobEvent;
-import me.a8kj.ww.internal.task.MobWatcherTask;
+import me.a8kj.ww.internal.task.MobWatcherTask.TaskExecuteType;
 import me.a8kj.ww.parent.entity.game.EventGame;
 import me.a8kj.ww.parent.entity.game.enums.GameState;
 import me.a8kj.ww.parent.entity.game.enums.NextPhase;
@@ -14,8 +14,8 @@ import org.bukkit.Bukkit;
 
 /**
  * The StartMechanic class handles the logic for starting a game in the event
- * system.
- * It spawns the event mob, triggers necessary events, and updates the game
+ * system. It spawns the event mob, triggers necessary events, and updates the
+ * game
  * phase and state.
  */
 public class StartMechanic extends GameMechanic {
@@ -46,8 +46,9 @@ public class StartMechanic extends GameMechanic {
                     "Mob cannot be null. Please check the mob configuration or restart the server.");
         }
 
-        // Try spawning the mob and proceed if successful
+        // Attempt to spawn the mob, log and handle failure if it occurs
         if (mob.spawn()) {
+            // Handle event triggering and state updates after successful mob spawn
             handleEventTriggering(game, mob);
             updateGamePhaseAndState(game);
         } else {
@@ -88,11 +89,13 @@ public class StartMechanic extends GameMechanic {
      * @param mob  The spawned event mob.
      */
     private void handleEventTriggering(EventGame game, EventMob mob) {
-        // Trigger SpawnMobEvent unconditionally
+        // Trigger the SpawnMobEvent and StartGameEvent unconditionally
         new SpawnMobEvent(mob).callEvent();
-        new MobWatcherTask(pluginProvider, mob).runTaskTimer(pluginProvider.getPlugin(), 0, 20);
 
-        // Trigger StartGameEvent unconditionally
+        pluginProvider.defineMobWatcherTask(pluginProvider, mob);
+        pluginProvider.getMobWatcherTask().execute(TaskExecuteType.START);
+
+        // Trigger StartGameEvent
         new StartGameEvent(game).callEvent();
     }
 }

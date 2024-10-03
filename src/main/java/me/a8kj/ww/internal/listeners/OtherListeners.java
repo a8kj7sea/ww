@@ -8,6 +8,7 @@ import org.bukkit.event.entity.CreatureSpawnEvent;
 import org.bukkit.event.entity.EntitySpawnEvent;
 import org.bukkit.event.entity.EntityTeleportEvent;
 
+import io.lumine.mythic.bukkit.MythicBukkit;
 import io.lumine.mythic.core.mobs.ActiveMob;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
@@ -38,7 +39,7 @@ public class OtherListeners implements Listener {
         String mobName = getMobName();
 
         if (isAllowedToSpawn(entity, mobName)) {
-            return; // Allow players and specific MythicMob to spawn
+            return; // Allow players and specific MythicMobs to spawn
         }
 
         if (WorldGuardUtils.isInRegion(entity, regionName)) {
@@ -99,7 +100,18 @@ public class OtherListeners implements Listener {
      * @return true if the entity is allowed to spawn, false otherwise
      */
     private boolean isAllowedToSpawn(Entity entity, String mobName) {
-        return entity instanceof Player || (entity instanceof ActiveMob && entity.getName().equalsIgnoreCase(mobName));
+        // Allow players to spawn
+        if (entity instanceof Player) {
+            return true;
+        }
+
+        // Check if the entity is a MythicMob
+        ActiveMob activeMob = MythicBukkit.inst().getMobManager().getActiveMob(entity.getUniqueId()).orElse(null);
+        if (activeMob != null && activeMob.getType().getInternalName().equalsIgnoreCase(mobName)) {
+            return true; // Allow MythicMob to spawn if the name matches
+        }
+
+        return false;
     }
 
     /**

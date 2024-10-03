@@ -7,7 +7,6 @@ import org.bukkit.Bukkit;
 
 import me.a8kj.ww.internal.manager.GameManager;
 import me.a8kj.ww.internal.schedules.EventsScheduler;
-import me.a8kj.ww.parent.entity.game.EventGame;
 import me.a8kj.ww.parent.entity.game.enums.GameState;
 import me.a8kj.ww.parent.entity.plugin.PluginProvider;
 import me.a8kj.ww.parent.entity.plugin.PluginTask;
@@ -65,30 +64,22 @@ public class SchedulerTask extends PluginTask {
             }
 
             // Proceed if there is no current game
-            if (!gameManager.getCurrentGame().isPresent()) {
-                if (Bukkit.getOnlinePlayers().size() <= 1) {
-                    Bukkit.getLogger().warning("[DEBUG-MODE] Not enough players to start the event!");
-                    return; // Exit early if not enough players
-                }
+            if (gameManager.getCurrentGame().isEmpty() && Bukkit.getOnlinePlayers().size() <= 1) {
+                Bukkit.getLogger().warning("[DEBUG-MODE] Not enough players to start the event!");
+                return; // Exit early if not enough players
+            }
 
-                // Remove and execute the event
-                eventScheduler.schedule(nextEvent, ScheduledType.REMOVE);
-                gameManager.createGame();
-                gameManager.startGame();
-            } else {
-                EventGame game = gameManager.getCurrentGame().get();
+            // Remove and execute the event
+            eventScheduler.schedule(nextEvent, ScheduledType.REMOVE);
+            gameManager.createGame();
+            gameManager.startGame();
 
-                // Check if the current game is in progress
+            // Check if a current game is running after scheduling
+            gameManager.getCurrentGame().ifPresent(game -> {
                 if (game.getGameState() == GameState.INGAME) {
                     Bukkit.getLogger().warning("[DEBUG-MODE] An event is currently running!");
-                    return; // Exit early if an event is running
                 }
-
-                // Remove and execute the event
-                eventScheduler.schedule(nextEvent, ScheduledType.REMOVE);
-                gameManager.createGame();
-                gameManager.startGame();
-            }
+            });
         }
     }
 }

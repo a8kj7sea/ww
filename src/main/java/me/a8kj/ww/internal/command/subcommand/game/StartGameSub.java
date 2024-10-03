@@ -61,17 +61,18 @@ public class StartGameSub extends PlayerSubCommand {
             }
 
             startNewGame(gameManager, source);
-        } else {
-            EventGame game = gameManager.getCurrentGame().get();
-
-            // Check if the current game is in progress
-            if (game.getGameState() == GameState.INGAME) {
-                source.sendMessage(getMessageRetriever().getMessage(MessagePathIdentifiers.COMMAND_START_GAME_FAILURE));
-                return; // Exit early if an event is running
-            }
-
-            startNewGame(gameManager, source);
+            return; // Early exit after starting the game
         }
+
+        // Handle case when there is an ongoing game
+        EventGame game = gameManager.getCurrentGame().get();
+        if (game.getGameState() == GameState.INGAME) {
+            source.sendMessage(getMessageRetriever().getMessage(MessagePathIdentifiers.COMMAND_START_GAME_FAILURE));
+            return; // Exit early if an event is running
+        }
+
+        // If the game is not in progress, start a new game
+        startNewGame(gameManager, source);
     }
 
     /**
