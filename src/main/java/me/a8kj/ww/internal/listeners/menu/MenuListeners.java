@@ -30,24 +30,34 @@ public class MenuListeners implements Listener {
      *
      * <p>
      * This method is triggered whenever a player clicks in an inventory.
-     * It delegates the handling of the click event to all registered menus.
+     * It cancels the event to prevent any item movement or interaction.
      * </p>
      *
      * @param event the inventory click event.
      */
     @EventHandler
     public void handleClick(InventoryClickEvent event) {
+        // Check if the clicked inventory is valid
         if (isInvalidClickEvent(event)) {
             return;
         }
 
         InventoryView inventoryView = event.getView();
-        if (!inventoryView.getTitle().equalsIgnoreCase(legacyColorize("&bScheduled Events - List")) ||
-                inventoryView.getTitle().equalsIgnoreCase(legacyColorize("&bLocations - List"))) {
-            return;
+        // Check if the inventory is one of the protected menus
+        if (isProtectedInventory(inventoryView)) {
+            event.setCancelled(true); // Cancel the event to prevent any interaction
         }
+    }
 
-        event.setCancelled(true); // Cancel the event if it's a valid click
+    /**
+     * Checks if the inventory is protected.
+     *
+     * @param inventoryView the inventory view to check.
+     * @return true if the inventory is protected; otherwise, false.
+     */
+    private boolean isProtectedInventory(InventoryView inventoryView) {
+        return inventoryView.getTitle().equalsIgnoreCase(legacyColorize("&bScheduled Events - List")) ||
+                inventoryView.getTitle().equalsIgnoreCase(legacyColorize("&eLocations - List"));
     }
 
     /**
@@ -64,8 +74,4 @@ public class MenuListeners implements Listener {
                 event.getInventory() == null ||
                 event.getView() == null;
     }
-
-    // public void onInventoryClick(InventoryClickEvent event) {
-    // pluginProvider.getMenus().values().forEach(menu -> menu.handleClick(event));
-    // }
 }

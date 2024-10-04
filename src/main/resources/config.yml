@@ -13,4 +13,4 @@ region-settings:
 mob-settings:
   # The name of the mob that should spawn (case-sensitive)
   # Ensure the mob name is correctly spelled and follows the Minecraft mob naming conventions
-  name: "GIANT" # Be mindful of case sensitivity here
+  name: "SkeletalKnight" # Be mindful of case sensitivity here

@@ -39,6 +39,11 @@ public class OtherListeners implements Listener {
             return;
         }
 
+        // Check if the entity is an item (dropped items)
+        if (entity.getType() == EntityType.ITEM) {
+            return; // Allow dropped items to spawn
+        }
+
         // Check if the entity is within the specified WorldGuard region
         if (!WorldGuardUtils.isInRegion(entity, getRegionName())) {
             return; // Allow spawning outside the region
