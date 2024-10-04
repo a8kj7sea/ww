@@ -1,24 +1,22 @@
 package me.a8kj.ww.internal.listeners;
 
+import org.bukkit.Material;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
-import org.bukkit.event.entity.EntitySpawnEvent;
+import org.bukkit.event.entity.CreatureSpawnEvent;
 
 import io.lumine.mythic.bukkit.MythicBukkit;
+import lombok.Getter;
+import lombok.RequiredArgsConstructor;
 import me.a8kj.ww.internal.configuration.enums.SettingsPathIdentifiers;
 import me.a8kj.ww.internal.configuration.files.SettingsFile;
 import me.a8kj.ww.internal.configuration.retrievers.SettingsRetriever;
 import me.a8kj.ww.parent.entity.plugin.PluginProvider;
 import me.a8kj.ww.parent.utils.WorldGuardUtils;
-import lombok.Getter;
-import lombok.RequiredArgsConstructor;
 
-/**
- * Listener for handling entity spawn events.
- */
 @RequiredArgsConstructor
 @Getter
 public class OtherListeners implements Listener {
@@ -26,22 +24,17 @@ public class OtherListeners implements Listener {
     private final MythicBukkit mythicBukkit = MythicBukkit.inst();
 
     /**
-     * Handles the entity spawning events to restrict the spawning of entities.
+     * Handles the creature spawning events to restrict the spawning of entities.
      *
-     * @param event the event triggered when an entity spawns
+     * @param event the event triggered when a creature spawns
      */
     @EventHandler
-    public void onEntitySpawnEvent(EntitySpawnEvent event) {
+    public void onCreatureSpawnEvent(CreatureSpawnEvent event) {
         Entity entity = event.getEntity();
 
-        // Check if the entity is a player and ignore if it is
+        // Ignore if the entity is a player
         if (entity instanceof Player) {
             return;
-        }
-
-        // Check if the entity is an item (dropped items)
-        if (entity.getType() == EntityType.ITEM) {
-            return; // Allow dropped items to spawn
         }
 
         // Check if the entity is within the specified WorldGuard region
@@ -49,7 +42,7 @@ public class OtherListeners implements Listener {
             return; // Allow spawning outside the region
         }
 
-        // Allow specific entities to spawn
+        // Allow specific entities to spawn in the region
         if (entity.getType() == EntityType.WITHER_SKELETON || entity.getType() == EntityType.WOLF) {
             return; // Allow these mobs to spawn
         }

@@ -1,0 +1,5 @@
+schedules:
+  - ==: ScheduledEvent
+    hours: 10
+    minutes: 11
+    day: SATURDAY

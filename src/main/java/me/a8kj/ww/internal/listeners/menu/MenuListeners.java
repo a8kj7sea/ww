@@ -4,6 +4,7 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.inventory.InventoryView;
+import org.bukkit.inventory.PlayerInventory;
 
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
@@ -38,7 +39,7 @@ public class MenuListeners implements Listener {
     @EventHandler
     public void handleClick(InventoryClickEvent event) {
         // Check if the clicked inventory is valid
-        if (isInvalidClickEvent(event)) {
+        if (isInvalidClickEvent(event) && !(event.getInventory() instanceof PlayerInventory)) {
             return;
         }
 

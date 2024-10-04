@@ -34,6 +34,7 @@ import me.a8kj.ww.parent.entity.mob.EventMob;
 import me.a8kj.ww.parent.entity.plugin.PluginProvider;
 import me.a8kj.ww.parent.entity.schedule.EventScheduler;
 import me.a8kj.ww.parent.entity.schedule.ScheduledEvent;
+import net.kyori.adventure.platform.bukkit.BukkitAudiences;
 
 /**
  * Main plugin provider for the WW Plugin.
@@ -61,6 +62,8 @@ public class WWPluginProvider implements PluginProvider {
     private static final String GAME_NOT_SET_WARNING = "[DEBUG-MODE] Please set game by adding spawn locations!";
     private static final String PLUGIN_DISABLED_MESSAGE = "\u00a7cWW-Plugin has been disabled!";
 
+    private BukkitAudiences adventure;
+
     /**
      * Starts the plugin by initializing managers, loading configurations,
      * scheduling tasks, and registering event listeners.
@@ -73,6 +76,8 @@ public class WWPluginProvider implements PluginProvider {
         registerEventListeners();
         registerCommands();
         // registerMenu();
+
+        adventure = BukkitAudiences.create(plugin);
     }
 
     /**
@@ -187,8 +192,7 @@ public class WWPluginProvider implements PluginProvider {
         plugin.getServer().getPluginManager().registerEvents(new MenuListeners(this), plugin);
         plugin.getServer().getPluginManager().registerEvents(new EntityDamageByEntityListener(this), plugin);
         plugin.getServer().getPluginManager().registerEvents(new MythicMobDeathListener(this), plugin);
-         plugin.getServer().getPluginManager().registerEvents(new
-         OtherListeners(this), plugin);
+        plugin.getServer().getPluginManager().registerEvents(new OtherListeners(this), plugin);
     }
 
     /**

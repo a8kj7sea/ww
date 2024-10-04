@@ -15,6 +15,7 @@ import me.a8kj.ww.parent.entity.menu.Menu;
 import me.a8kj.ww.parent.entity.mob.EventMob;
 import me.a8kj.ww.parent.entity.schedule.EventScheduler;
 import me.a8kj.ww.parent.entity.schedule.ScheduledEvent;
+import net.kyori.adventure.platform.bukkit.BukkitAudiences;
 
 /**
  * Interface representing a provider for plugin-related functionalities.
@@ -61,6 +62,13 @@ public interface PluginProvider {
      *         instance.
      */
     Map<String, Menu> getMenus();
+
+    /**
+     * Retrieves a BukkitAudiences this plugin.
+     * 
+     * @return a Adventure instance of this plugin
+     */
+    BukkitAudiences getAdventure();
 
     /**
      * Retrieves the configuration manager instance associated with this provider.
