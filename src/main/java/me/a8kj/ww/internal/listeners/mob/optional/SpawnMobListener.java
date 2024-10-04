@@ -1,7 +1,5 @@
 package me.a8kj.ww.internal.listeners.mob.optional;
 
-import java.util.List;
-
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 

@@ -1,6 +1,5 @@
 package me.a8kj.ww.internal.listeners;
 
-import org.bukkit.Material;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
