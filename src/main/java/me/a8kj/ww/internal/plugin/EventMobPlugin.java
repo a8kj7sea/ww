@@ -2,8 +2,12 @@ package me.a8kj.ww.internal.plugin;
 
 import org.bukkit.Bukkit;
 import org.bukkit.configuration.serialization.ConfigurationSerialization;
+import org.bukkit.entity.Entity;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.java.JavaPlugin;
+
+import com.google.common.collect.Lists;
+
 import java.util.Arrays;
 import java.util.List;
 import lombok.Getter;
@@ -15,6 +19,8 @@ import me.a8kj.ww.parent.entity.schedule.ScheduledEvent;
  * and disabling the plugin, and initializes the WWPluginProvider.
  */
 public class EventMobPlugin extends JavaPlugin {
+
+    public static final List<Entity> spawnedEnityList = Lists.newArrayList();
 
     @Getter
     private static PluginProvider pluginProvider;

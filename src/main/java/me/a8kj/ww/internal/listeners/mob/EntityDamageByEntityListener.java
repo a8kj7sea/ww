@@ -8,6 +8,7 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 
+import io.lumine.mythic.bukkit.MythicBukkit;
 import io.lumine.mythic.core.mobs.ActiveMob;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
@@ -23,6 +24,8 @@ import me.a8kj.ww.parent.utils.WorldGuardUtils;
 
 /**
  * Listener for handling entity damage events between players and mobs.
+ * This listener ensures that damage interactions are restricted
+ * to specified regions defined by WorldGuard.
  */
 @RequiredArgsConstructor
 @Getter
@@ -31,40 +34,106 @@ public class EntityDamageByEntityListener implements Listener {
     private final PluginProvider pluginProvider;
 
     /**
-     * Handles the EntityDamageByEntityEvent to manage damage interactions.
+     * Handles the EntityDamageByEntityEvent.
+     * Checks if the damage is allowed based on the region and the entities
+     * involved.
      *
-     * @param event the event triggered when an entity is damaged by another entity
+     * @param event the EntityDamageByEntityEvent triggered
      */
     @EventHandler
     public void onDamageByEntity(EntityDamageByEntityEvent event) {
-        if (isInvalidEvent(event))
+        if (event.isCancelled() || event.getDamage() <= 0.0) {
             return;
+        }
 
-        String mobName = getMobName();
-        String regionName = getRegionName();
+        Entity victim = event.getEntity();
 
-        if (event.getEntity() instanceof Player victim) {
-            handlePlayerDamage(event, victim, mobName, regionName);
-        } else if (event.getEntity() instanceof ActiveMob || event.getEntity() instanceof Mob) {
-            handleMobDamage(event, event.getEntity(), mobName, regionName);
+        // Handle case when the victim is a player
+        if (victim instanceof Player player) {
+            handlePlayerDamage(event, player);
+        }
+        // Handle case when the victim is a mob
+        else if (victim instanceof Mob || MythicBukkit.inst().getAPIHelper().isMythicMob(victim)) {
+            handleMobDamage(event, victim);
         }
     }
 
     /**
-     * Checks if the event is valid for processing.
+     * Handles damage dealt to a player.
+     * Cancels the event if the damager is not allowed to deal damage in the
+     * specified region.
      *
-     * @param event the event to check
-     * @return true if the event is invalid, false otherwise
+     * @param event  the EntityDamageByEntityEvent
+     * @param victim the player who is damaged
      */
-    private boolean isInvalidEvent(EntityDamageByEntityEvent event) {
-        return event.getDamager() == null || event.getEntity() == null || event.getDamageSource() == null
-                || event.isCancelled() || event.getDamage() <= 0.0;
+    private void handlePlayerDamage(EntityDamageByEntityEvent event, Player victim) {
+        Entity damager = event.getDamager();
+
+        if (!(damager instanceof Mob || MythicBukkit.inst().getAPIHelper().isMythicMob(damager))) {
+            return;
+        }
+
+        // Retrieve the mob name from the settings
+        String mobNameToCheck = getMobName();
+
+        // Check if the damager is a MythicMob
+        ActiveMob activeMob = MythicBukkit.inst().getAPIHelper().getMythicMobInstance(damager);
+        String mobName = (activeMob != null) ? activeMob.getType().getInternalName() : damager.getName();
+
+        if (!mobName.equalsIgnoreCase(mobNameToCheck)) {
+            return;
+        }
+
+        String regionName = getRegionName();
+        if (!WorldGuardUtils.isInRegion(victim, regionName)) {
+            event.setCancelled(true);
+            return;
+        }
+
+        // Broadcast damage message
+        double health = ((Damageable) damager).getHealth();
+        String healthFormatted = String.format("%.1f", health);
+        PlayerUtils.broadcastMessage(
+                getMessage(MessagePathIdentifiers.GAME_LOGIC_COMBAT_INGAME_ATTACKED_BROADCAST, healthFormatted)
+                        .replace("%target_player%", victim.getName()));
     }
 
     /**
-     * Retrieves the mob name from the configuration.
+     * Handles damage dealt to a mob.
+     * Cancels the event if the attacker is not allowed to damage the mob in the
+     * specified region.
      *
-     * @return the name of the mob
+     * @param event the EntityDamageByEntityEvent
+     * @param mob   the mob that is damaged
+     */
+    private void handleMobDamage(EntityDamageByEntityEvent event, Entity mob) {
+        if (!(event.getDamageSource().getCausingEntity() instanceof Player damager)) {
+            return;
+        }
+
+        String mobNameToCheck = getMobName();
+        String mobName = (mob instanceof Mob) ? mob.getName() : null;
+
+        ActiveMob activeMob = MythicBukkit.inst().getAPIHelper().getMythicMobInstance(mob);
+        if (activeMob != null) {
+            mobName = activeMob.getType().getInternalName();
+        }
+
+        if (mobName == null || !mobName.equalsIgnoreCase(mobNameToCheck)) {
+            return;
+        }
+
+        String regionName = getRegionName();
+        if (!WorldGuardUtils.isInRegion(damager, regionName)) {
+            damager.sendMessage(getMessage(MessagePathIdentifiers.GAME_LOGIC_COMBAT_INGAME_NOT_ALLOWED_DAMAGE));
+            event.setCancelled(true);
+        }
+    }
+
+    /**
+     * Retrieves the mob name from the settings file.
+     *
+     * @return the name of the mob as a string
      */
     private String getMobName() {
         SettingsFile settingsFile = (SettingsFile) pluginProvider.getConfigurationManager()
@@ -74,9 +143,9 @@ public class EntityDamageByEntityListener implements Listener {
     }
 
     /**
-     * Retrieves the region name from the configuration.
+     * Retrieves the region name from the settings file.
      *
-     * @return the name of the region
+     * @return the name of the region as a string
      */
     private String getRegionName() {
         SettingsFile settingsFile = (SettingsFile) pluginProvider.getConfigurationManager()
@@ -86,58 +155,12 @@ public class EntityDamageByEntityListener implements Listener {
     }
 
     /**
-     * Handles damage dealt to a player by a mob.
+     * Retrieves a formatted message from the messages file, replacing placeholders
+     * with provided values.
      *
-     * @param event      the damage event
-     * @param victim     the player being damaged
-     * @param mobName    the name of the mob
-     * @param regionName the name of the region
-     */
-    private void handlePlayerDamage(EntityDamageByEntityEvent event, Player victim, String mobName, String regionName) {
-        Entity damager = event.getDamageSource().getCausingEntity();
-
-        if (!(damager instanceof ActiveMob || damager instanceof Mob) || damager.getName() == null)
-            return;
-        if (!damager.getName().equalsIgnoreCase(mobName))
-            return;
-
-        if (!WorldGuardUtils.isInRegion(victim, regionName)) {
-            event.setCancelled(true);
-        }
-
-        float health = (float) ((Damageable) damager).getHealth();
-        String healthFormatted = String.format("%.1f", health);
-        PlayerUtils.broadcastMessage(
-                getMessage(MessagePathIdentifiers.GAME_LOGIC_COMBAT_INGAME_ATTACKED_BROADCAST, healthFormatted));
-    }
-
-    /**
-     * Handles damage dealt to a mob by a player.
-     *
-     * @param event      the damage event
-     * @param entity     the mob being damaged
-     * @param mobName    the name of the mob
-     * @param regionName the name of the region
-     */
-    private void handleMobDamage(EntityDamageByEntityEvent event, Entity entity, String mobName,
-            String regionName) {
-        if (entity.getName() == null || !entity.getName().equalsIgnoreCase(mobName))
-            return;
-
-        if (event.getDamageSource().getCausingEntity() instanceof Player damager) {
-            if (!WorldGuardUtils.isInRegion(damager, regionName)) {
-                damager.sendMessage(getMessage(MessagePathIdentifiers.GAME_LOGIC_COMBAT_INGAME_NOT_ALLOWED_DAMAGE));
-                event.setCancelled(true);
-            }
-        }
-    }
-
-    /**
-     * Retrieves a message from the configuration, replacing placeholders as needed.
-     *
-     * @param pathIdentifier the message path identifier
-     * @param replacements   the replacements for placeholders in the message
-     * @return the formatted message
+     * @param pathIdentifier the identifier for the message path
+     * @param replacements   values to replace placeholders in the message
+     * @return the formatted message as a string
      */
     private String getMessage(MessagePathIdentifiers pathIdentifier, String... replacements) {
         MessagesFile messagesFile = (MessagesFile) pluginProvider.getConfigurationManager()

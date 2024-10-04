@@ -1,5 +1,7 @@
 package me.a8kj.ww.internal.listeners.mob.optional;
 
+import java.util.List;
+
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 
@@ -24,6 +26,9 @@ import me.a8kj.ww.parent.utils.PlayerUtils;
 @Getter
 public class SpawnMobListener implements Listener {
 
+
+    
+
     private final PluginProvider pluginProvider;
 
     /**
@@ -41,7 +46,7 @@ public class SpawnMobListener implements Listener {
         MessagesFile messagesFile = (MessagesFile) pluginProvider.getConfigurationManager()
                 .getConfiguration("messages");
         SettingsFile settingsFile = (SettingsFile) pluginProvider.getConfigurationManager()
-                .getConfiguration("events");
+                .getConfiguration("settings");
         SettingsRetriever settingsRetriever = new SettingsRetriever(settingsFile.getYamConfiguration());
 
         // Check if PlaceholderAPI support is enabled

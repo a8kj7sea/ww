@@ -9,8 +9,11 @@ import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import me.a8kj.ww.api.event.game.impl.EndGameEvent.EndReason;
 import me.a8kj.ww.api.event.mob.AnnounceDropEvent;
+import me.a8kj.ww.internal.configuration.enums.EventPathIdentifiers;
 import me.a8kj.ww.internal.configuration.enums.SettingsPathIdentifiers;
+import me.a8kj.ww.internal.configuration.files.EventsFile;
 import me.a8kj.ww.internal.configuration.files.SettingsFile;
+import me.a8kj.ww.internal.configuration.retrievers.EventRetriever;
 import me.a8kj.ww.internal.configuration.retrievers.SettingsRetriever;
 import me.a8kj.ww.internal.manager.GameManager;
 import me.a8kj.ww.parent.entity.plugin.PluginProvider;
@@ -27,12 +30,6 @@ public class MythicMobDeathListener implements Listener {
 
     private final PluginProvider pluginProvider;
 
-    /**
-     * Handles the MythicMobDeathEvent when a MythicMob dies.
-     *
-     * @param event The event containing information about the dead mob.
-     * @throws IllegalStateException if the active mob cannot be fetched.
-     */
     @EventHandler
     public void onMythicMobDeath(MythicMobDeathEvent event) {
         ActiveMob activeMob = event.getMob();
@@ -54,10 +51,13 @@ public class MythicMobDeathListener implements Listener {
             return; // Exit if names do not match
         }
 
-        // HERE LAZM A3ML APPLY END MECHANINC
+        // End the game due to the mob's death
         GameManager gameManager = pluginProvider.getGameManager();
         gameManager.endGame(EndReason.DEATH);
-        // Trigger the announce drop event with the drops from the dead mob
-        new AnnounceDropEvent(event.getDrops()).callEvent();
+
+        EventsFile eventsFile = (EventsFile) pluginProvider.getConfigurationManager().getConfiguration("events");
+        EventRetriever eventRetriever = new EventRetriever(eventsFile.getYamConfiguration());
+        if (!event.getDrops().isEmpty() && !eventRetriever.getBoolean(EventPathIdentifiers.ANNOUNCE_DROP_EVENT))
+            new AnnounceDropEvent(event.getDrops()).callEvent();
     }
 }

@@ -1,5 +1,6 @@
 package me.a8kj.ww.api.event.mob.impl;
 
+import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.event.Cancellable;
 import java.util.function.Consumer;
@@ -84,5 +85,10 @@ public class MobMoveEvent extends MobEvent implements Cancellable {
      */
     public void setTeleportationHandler(Consumer<Location> handler) {
         this.teleportationHandler = handler;
+    }
+
+    @Override
+    public void callEvent() {
+        Bukkit.getPluginManager().callEvent(this);
     }
 }

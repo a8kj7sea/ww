@@ -87,18 +87,28 @@ public class EndMechanic extends GameMechanic {
     }
 
     /**
-     * Despawns the mob safely.
+     * Despawns the mob safely, checking if the mob is dead before attempting to
+     * despawn it.
      *
      * @param mob The mob to despawn.
-     * @return true if the mob was successfully despawned, false otherwise.
+     * @return true if the mob was successfully despawned or is already dead, false
+     *         otherwise.
      */
     private boolean despawnMob(EventMob mob) {
+        // Check if the mob is alive before attempting to despawn
+        if (mob.getBukkitEntity().get().isDead()) {
+            Bukkit.getLogger().info("[INFO] Mob is already dead. No need to despawn. Mob: " + mob);
+            return true;
+        }
+
         // Attempt to despawn the mob
         boolean isDespawned = mob.despawn();
         if (!isDespawned) {
             Bukkit.getLogger().severe("[ERROR] Mob failed to despawn. Mob: " + mob);
+            return false;
         }
-        return isDespawned;
+
+        return true;
     }
 
     /**

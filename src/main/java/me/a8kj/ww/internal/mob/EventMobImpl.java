@@ -15,14 +15,14 @@ import io.lumine.mythic.bukkit.BukkitAdapter;
 import io.lumine.mythic.bukkit.MythicBukkit;
 import io.lumine.mythic.core.mobs.ActiveMob;
 import lombok.NonNull;
+import me.a8kj.ww.internal.plugin.EventMobPlugin;
 import me.a8kj.ww.parent.entity.mob.EventMob;
 import me.a8kj.ww.parent.utils.LocationsUtils;
 import me.a8kj.ww.parent.utils.MathUtils;
 
 /**
  * Implementation of the {@link EventMob} interface to manage and handle
- * event-related
- * mobs using MythicMobs in Bukkit.
+ * event-related mobs using MythicMobs in Bukkit.
  */
 public class EventMobImpl implements EventMob {
 
@@ -71,9 +71,15 @@ public class EventMobImpl implements EventMob {
      */
     @Override
     public boolean despawn() {
-        checkIfCanDespawn();
-        performDespawn();
-        return true;
+        try {
+            checkIfCanDespawn();
+            performDespawn();
+            return true;
+        } catch (IllegalStateException e) {
+            // Log the issue and return false instead of crashing
+            Bukkit.getLogger().warning("[DEBUG-MODE] Despawn failed: " + e.getMessage());
+            return false;
+        }
     }
 
     /**
@@ -176,6 +182,8 @@ public class EventMobImpl implements EventMob {
      * @throws IllegalStateException if the mob or entity fails to spawn.
      */
     private void spawnMob(MythicMob mythicMob, Location spawnLocation) {
+        Bukkit.getLogger().info("[DEBUG-MODE] Attempting to spawn entity: " + name + " at " + spawnLocation);
+
         ActiveMob activeMob = mythicMob.spawn(BukkitAdapter.adapt(spawnLocation), 0);
         if (activeMob == null) {
             throw new IllegalStateException("Failed to get ActiveMob!");
@@ -189,8 +197,10 @@ public class EventMobImpl implements EventMob {
         this.activeMob = activeMob;
         this.bukkitEntity = entity;
 
+        EventMobPlugin.spawnedEnityList.clear();
+        EventMobPlugin.spawnedEnityList.add(entity);
         Bukkit.getLogger()
-                .info("[DEBUG-MODE] Entity with this name " + name + " spawned at " + spawnLocation + " successfully!");
+                .info("[DEBUG-MODE] Entity with name " + name + " spawned successfully at " + spawnLocation + "!");
     }
 
     /**
@@ -205,7 +215,11 @@ public class EventMobImpl implements EventMob {
                     "Couldn't find entity with this name. Please make sure you have input a valid name.");
         }
 
+        // Check if the entity is spawned and valid before allowing despawn
         if (!isValid() || !isAlive()) {
+            // Log more information for debugging
+            Bukkit.getLogger()
+                    .warning("[DEBUG-MODE] Attempted to despawn an entity that is either not valid or already dead!");
             throw new IllegalStateException(
                     "You cannot despawn an entity that has not spawned yet or has already died!");
         }
@@ -216,6 +230,7 @@ public class EventMobImpl implements EventMob {
      */
     private void performDespawn() {
         this.activeMob.despawn();
+        EventMobPlugin.spawnedEnityList.clear();
         Bukkit.getLogger().info("[DEBUG-MODE] Entity despawned successfully!");
     }
 }

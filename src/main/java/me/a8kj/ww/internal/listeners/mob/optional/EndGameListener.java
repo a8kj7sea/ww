@@ -40,7 +40,7 @@ public class EndGameListener implements Listener {
         EndReason endReason = event.getEndReason();
         MessagesFile messagesFile = (MessagesFile) pluginProvider.getConfigurationManager()
                 .getConfiguration("messages");
-        SettingsFile settingsFile = (SettingsFile) pluginProvider.getConfigurationManager().getConfiguration("events");
+        SettingsFile settingsFile = (SettingsFile) pluginProvider.getConfigurationManager().getConfiguration("settings");
         SettingsRetriever settingsRetriever = new SettingsRetriever(settingsFile.getYamConfiguration());
 
         if (endReason == EndReason.COMMAND) {

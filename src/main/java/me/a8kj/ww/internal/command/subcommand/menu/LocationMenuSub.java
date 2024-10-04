@@ -6,7 +6,7 @@ import org.bukkit.Location;
 import org.bukkit.entity.Player;
 
 import me.a8kj.ww.internal.configuration.enums.MessagePathIdentifiers;
-import me.a8kj.ww.internal.menu.LocationsMenu;
+import me.a8kj.ww.internal.menu.LocationsInventory;
 import me.a8kj.ww.parent.command.impl.PlayerSubCommand;
 import me.a8kj.ww.parent.entity.plugin.PluginProvider;
 
@@ -50,11 +50,11 @@ public class LocationMenuSub extends PlayerSubCommand {
         }
 
         // Retrieve and open the locations menu
-        LocationsMenu locationsMenu = new LocationsMenu(pluginProvider);
+        // Menu locationsMenu = new LocationsMenu(EventMobPlugin.getPluginProvider());
 
         source.getOpenInventory().close(); // Close the current inventory
         source.updateInventory(); // Update player inventory state
-        source.openInventory(locationsMenu.build()); // Open the locations menu
+        new LocationsInventory().openLocationsInventory(source, locations);
         source.sendMessage(getMessageRetriever().getMessage(MessagePathIdentifiers.LOCATION_LIST_OPENED)); // Notify
                                                                                                            // player
     }

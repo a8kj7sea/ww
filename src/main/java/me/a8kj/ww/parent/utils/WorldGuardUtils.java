@@ -87,17 +87,17 @@ public class WorldGuardUtils {
 
         // Adjust X coordinate to stay at least 'distance' blocks away from the min/max
         // boundaries
-        if (safeLocation.getX() - min.getX() < distance) {
+        if (safeLocation.getX() - min.getX() <= distance) {
             safeLocation.setX(min.getX() + distance);
-        } else if (max.getX() - safeLocation.getX() < distance) {
+        } else if (max.getX() - safeLocation.getX() <= distance) {
             safeLocation.setX(max.getX() - distance);
         }
 
         // Adjust Z coordinate to stay at least 'distance' blocks away from the min/max
         // boundaries
-        if (safeLocation.getZ() - min.getZ() < distance) {
+        if (safeLocation.getZ() - min.getZ() <= distance) {
             safeLocation.setZ(min.getZ() + distance);
-        } else if (max.getZ() - safeLocation.getZ() < distance) {
+        } else if (max.getZ() - safeLocation.getZ() <= distance) {
             safeLocation.setZ(max.getZ() - distance);
         }
 

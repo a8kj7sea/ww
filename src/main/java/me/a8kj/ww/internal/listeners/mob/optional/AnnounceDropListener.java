@@ -8,6 +8,7 @@ import org.bukkit.event.Listener;
 import org.bukkit.inventory.ItemStack;
 
 import me.a8kj.ww.api.event.mob.AnnounceDropEvent;
+import me.a8kj.ww.internal.plugin.EventMobPlugin;
 import net.md_5.bungee.api.ChatColor;
 
 /**
@@ -58,5 +59,7 @@ public class AnnounceDropListener implements Listener {
         dropMessage.append(ChatColor.GREEN).append("Gather your rewards and continue your adventure!");
         // Broadcast the final message to all players
         Bukkit.broadcastMessage(dropMessage.toString());
+
+        EventMobPlugin.getPluginProvider().getGameManager().removeGame();
     }
 }

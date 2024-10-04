@@ -187,7 +187,8 @@ public class WWPluginProvider implements PluginProvider {
         plugin.getServer().getPluginManager().registerEvents(new MenuListeners(this), plugin);
         plugin.getServer().getPluginManager().registerEvents(new EntityDamageByEntityListener(this), plugin);
         plugin.getServer().getPluginManager().registerEvents(new MythicMobDeathListener(this), plugin);
-        plugin.getServer().getPluginManager().registerEvents(new OtherListeners(this), plugin);
+         plugin.getServer().getPluginManager().registerEvents(new
+         OtherListeners(this), plugin);
     }
 
     /**

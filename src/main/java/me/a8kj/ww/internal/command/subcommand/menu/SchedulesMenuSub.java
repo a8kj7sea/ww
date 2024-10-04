@@ -5,7 +5,7 @@ import java.util.Set;
 import org.bukkit.entity.Player;
 
 import me.a8kj.ww.internal.configuration.enums.MessagePathIdentifiers;
-import me.a8kj.ww.internal.menu.SchedulesMenu;
+import me.a8kj.ww.internal.menu.SchedulesInventory;
 import me.a8kj.ww.parent.command.impl.PlayerSubCommand;
 import me.a8kj.ww.parent.entity.plugin.PluginProvider;
 import me.a8kj.ww.parent.entity.schedule.ScheduledEvent;
@@ -50,12 +50,9 @@ public class SchedulesMenuSub extends PlayerSubCommand {
             return;
         }
 
-        // Retrieve and open the schedules menu
-        SchedulesMenu schedulesMenu = new SchedulesMenu(pluginProvider);
-
         source.getOpenInventory().close(); // Close the current inventory
         source.updateInventory(); // Update the player's inventory state
-        source.openInventory(schedulesMenu.build()); // Open the schedules menu
+        new SchedulesInventory().openSchedulesInventory(source, scheduledEvents);
         source.sendMessage(getMessageRetriever().getMessage(MessagePathIdentifiers.COMMAND_SCHEDULE_LIST_SUCCESS)); // Notify
                                                                                                                     // player
     }

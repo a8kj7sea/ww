@@ -17,7 +17,6 @@ import me.a8kj.ww.parent.entity.mob.EventMob;
 import me.a8kj.ww.parent.entity.plugin.PluginProvider;
 import org.bukkit.Bukkit;
 
-import java.util.List;
 import java.util.Optional;
 
 /**
@@ -75,14 +74,13 @@ public class GameManager {
      *         otherwise.
      */
     public boolean checkSetup() {
-        // Retrieve the list of spawn locations from the configuration file
-        List<String> spawnLocations = pluginProvider.getConfigurations()
+
+        boolean isOk = pluginProvider.getConfigurations()
                 .get("locations")
                 .getYamConfiguration()
-                .getStringList("spawn-locations");
+                .contains("spawn-locations");
 
-        // Return true if the list is not empty, indicating that setup is complete
-        return !spawnLocations.isEmpty();
+        return isOk;
     }
 
     /**

@@ -41,7 +41,7 @@ public class StartGameListener implements Listener {
         MessagesFile messagesFile = (MessagesFile) pluginProvider.getConfigurationManager()
                 .getConfiguration("messages");
         SettingsFile settingsFile = (SettingsFile) pluginProvider.getConfigurationManager()
-                .getConfiguration("events");
+                .getConfiguration("settings");
         SettingsRetriever settingsRetriever = new SettingsRetriever(settingsFile.getYamConfiguration());
 
         // Check if PlaceholderAPI support is enabled and handle messages accordingly

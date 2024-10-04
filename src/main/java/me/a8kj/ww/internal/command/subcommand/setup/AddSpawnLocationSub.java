@@ -4,9 +4,12 @@ import org.bukkit.Location;
 import org.bukkit.entity.Player;
 
 import me.a8kj.ww.internal.configuration.enums.MessagePathIdentifiers;
+import me.a8kj.ww.internal.configuration.enums.SettingsPathIdentifiers;
 import me.a8kj.ww.parent.command.impl.PlayerSubCommand;
 import me.a8kj.ww.parent.entity.plugin.PluginProvider;
 import me.a8kj.ww.parent.utils.LocationsUtils;
+import me.a8kj.ww.parent.utils.StringUtils;
+import me.a8kj.ww.parent.utils.WorldGuardUtils;
 
 /**
  * Sub-command for adding a spawn location.
@@ -75,6 +78,11 @@ public class AddSpawnLocationSub extends PlayerSubCommand {
         Location location = source.getLocation();
         final String section = "spawn-locations";
 
+        if (!WorldGuardUtils.isInRegion(location,
+                getSettingsRetriever().getString(SettingsPathIdentifiers.REGION_NAME))) {
+            source.sendMessage(StringUtils.legacyColorize("&cYou cannot add location that out the warzone region!"));
+            return;
+        }
         boolean success = LocationsUtils.savePlayerLocation(location, section, getLocationsFile());
 
         if (!success) {
